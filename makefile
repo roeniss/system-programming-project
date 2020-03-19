@@ -18,10 +18,10 @@
 
 CC=gcc
 CFLAGS=-Wall
+OBJS=main.o
 
-APP_NAME=20140424.out
-$(APP_NAME): main.o
-	gcc -o $@ main.o
+$(APP_NAME): $(OBJS)
+	gcc -o $@ $(OBJS)
 
 main.o: main.c
-	${CC} ${CFLAGS} -o $@ main.c
+	$(CC) $(CFLAGS) -o $@ main.c
