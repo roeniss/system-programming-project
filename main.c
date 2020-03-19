@@ -4,6 +4,7 @@
 // #include <stdarg.h>
 
 #include "myUtils.h"
+#include "help.h"
 
 #define MAX_INPUT_BUFFRE_SIZE 100
 
