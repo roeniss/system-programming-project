@@ -32,6 +32,6 @@ main.o: main.c
 
 ## macro ##
 clean:
-	rm *.o
+	rm -f *.o
 	rm -f $(TARGET)
 ## ~macro ##
