@@ -26,3 +26,12 @@ $(TARGET): $(OBJS)
 
 main.o: main.c
 	$(CC) $(CFLAGS) -c -o $@ main.c
+
+
+
+
+## macro ##
+clean:
+	rm *.o
+	rm -f $(TARGET)
+## ~macro ##
