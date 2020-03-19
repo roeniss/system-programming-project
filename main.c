@@ -7,26 +7,74 @@
 
 #define MAX_INPUT_BUFFRE_SIZE 100
 
-void execute_command(char *);
+enum command get_command(char *);
 
 int main()
 {
-	char *buffer;
+	char *buffer, *tBuffer; // t for "trimmed", tok for "tokenized"
+	enum command cmd;
 
 	while (1)
 	{
 		buffer = ready_command(MAX_INPUT_BUFFRE_SIZE);
-		// buffer = trim(buffer);
+		tBuffer = lTrim(buffer);
 
-		execute_command(buffer);
+		cmd = get_command(tBuffer);
+
+		if (cmd != c_unrecognized)
+		{
+			// add_history(buffer);
+			if (cmd == c_help)
+				help();
+			// else if (cmd == c_dir)
+			// 	dir();
+			// else if (cmd == c_quit)
+			// 	quit();
+			// else if (cmd == c_history)
+			// 	history();
+			// else if (cmd == c_dump)
+			// 	dump();
+			// else if (cmd == c_edit)
+			// 	edit();
+			// else if (cmd == c_fill)
+			// 	fill();
+			// else if (cmd == c_reset)
+			// 	reset();
+			// else if (cmd == c_opcode)
+			// 	opcode();
+			// else if (cmd == c_opcodelist)
+			// 	opcodelist();
+		}
+
+		free(buffer);
 	}
 	return 0;
 }
 
-void execute_command(char *buffer)
+enum command get_command(char *buffer)
 {
-	if (strcmp(buffer, "help") == 0 || strcmp(buffer, "h") == 0)
-	{
-		// printf("h[elp]\nd[ir]\nq[uit]\nhi[story]\ndu[mp] [start, end]\ne[dit] address, value\nf[ill] start, end, value\nreset\nopcode mnemonic\nopcodelist\n");
-	}
+	char *token = (char *)strtok(buffer, " ");
+
+	if (strcmp(token, "h") == 0 || strcmp(token, "help") == 0)
+		return c_help;
+	else if (strcmp(token, "d") == 0 || strcmp(token, "dir") == 0)
+		return c_dir;
+	else if (strcmp(token, "q") == 0 || strcmp(token, "quit") == 0)
+		return c_dir;
+	else if (strcmp(token, "hi") == 0 || strcmp(token, "history") == 0)
+		return c_history;
+	else if (strcmp(token, "du") == 0 || strcmp(token, "dump") == 0)
+		return c_dump;
+	else if (strcmp(token, "e") == 0 || strcmp(token, "edit") == 0)
+		return c_edit;
+	else if (strcmp(token, "f") == 0 || strcmp(token, "fill") == 0)
+		return c_fill;
+	else if (strcmp(token, "reset") == 0)
+		return c_reset;
+	else if (strcmp(token, "opcode") == 0)
+		return c_opcode;
+	else if (strcmp(token, "opcodelist") == 0)
+		return c_opcodelist;
+	else
+		return c_unrecognized;
 }

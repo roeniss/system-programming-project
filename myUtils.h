@@ -2,6 +2,24 @@
 #define MY_UNILS_H
 
 //
+// Command-relative
+//
+enum command
+{
+	c_help,
+	c_dir,
+	c_quit,
+	c_history,
+	c_dump,
+	c_edit,
+	c_fill,
+	c_reset,
+	c_opcode,
+	c_opcodelist,
+	c_unrecognized
+};
+
+//
 // Buffer-relative
 //
 
@@ -12,9 +30,7 @@ char *ready_command(int);
 // String-relative
 //
 
-// trim left and right of target string
-void trim(char *);
-// wrapper for strcmp of boolean version
-void is_same_str(char *, ...);
+// trim left for target string
+char *lTrim(char *);
 
 #endif
