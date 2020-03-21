@@ -7,6 +7,7 @@
 #include "dir.h"
 #include "quit.h"
 #include "history.h"
+#include "dump.h"
 
 #define MAX_INPUT_BUFFRE_SIZE 100
 
@@ -39,8 +40,8 @@ int main()
 				quit();
 			else if (cmd == c_history)
 				show_history();
-			// else if (cmd == c_dump)
-			// 	dump();
+			else if (cmd == c_dump)
+				dump();
 			// else if (cmd == c_edit)
 			// 	edit();
 			// else if (cmd == c_fill)
