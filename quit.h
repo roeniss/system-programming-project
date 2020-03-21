@@ -1,7 +1,7 @@
 #ifndef QUIT_H
 #define QUIT_H
 
-// show available commands
+// quit this shell
 void quit();
 
 #endif
