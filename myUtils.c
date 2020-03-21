@@ -11,7 +11,7 @@ char *ready_command(int max_len)
 	char *buffer;
 	buffer = (char *)malloc(max_len * sizeof(char));
 
-	printf("sicsim > ");
+	printf("sicsim> ");
 	// strlen(buffer) become read data size. (maxLen: char array size - 1)
 	// (NULL is not counted)
 	// but in this case, (max : char array size -2) reason : check below.
