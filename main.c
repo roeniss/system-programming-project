@@ -4,8 +4,8 @@
 
 #include "myUtils.h"
 #include "help.h"
-#include "quit.h"
 #include "dir.h"
+#include "quit.h"
 #include "history.h"
 
 #define MAX_INPUT_BUFFRE_SIZE 100
