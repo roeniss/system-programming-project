@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// #include <stdarg.h>
 
 #include "myUtils.h"
 #include "help.h"
 #include "quit.h"
+#include "dir.h"
 
 #define MAX_INPUT_BUFFRE_SIZE 100
 
@@ -19,18 +19,19 @@ int main()
 	while (1)
 	{
 		buffer = ready_command(MAX_INPUT_BUFFRE_SIZE);
+		printf("[DEBUG] buffer  : %s\n", buffer);
 		tBuffer = lTrim(buffer);
-
+		printf("[DEBUG] tBuffer : %s\n", tBuffer);
 		cmd = get_command(tBuffer);
 
 		if (cmd != c_unrecognized)
 		{
-			// printf("[DEBUG] command : %d\n", cmd);
+			printf("[DEBUG] command : %d\n", cmd);
 			// add_history(buffer);
 			if (cmd == c_help)
 				help();
-			// else if (cmd == c_dir)
-			// 	dir();
+			else if (cmd == c_dir)
+				dir();
 			else if (cmd == c_quit)
 				quit();
 			// else if (cmd == c_history)

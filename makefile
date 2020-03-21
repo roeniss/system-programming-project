@@ -18,7 +18,7 @@
 
 CC=gcc
 CFLAGS=-Wall
-OBJS=main.o myUtils.o help.o quit.o
+OBJS=main.o myUtils.o help.o dir.o quit.o
 TARGET=20140424.out
 
 $(TARGET): $(OBJS)
@@ -29,6 +29,7 @@ main.o: main.c
 
 myUtils.o: myUtils.c
 help.o: help.c
+dir.o: dir.c
 quit.o: quit.c
 
 
