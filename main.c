@@ -6,6 +6,7 @@
 #include "help.h"
 #include "quit.h"
 #include "dir.h"
+#include "history.h"
 
 #define MAX_INPUT_BUFFRE_SIZE 100
 
@@ -15,6 +16,8 @@ int main()
 {
 	char *buffer, *tBuffer; // t for "trimmed", tok for "tokenized"
 	enum command cmd;
+
+	init_history();
 
 	while (1)
 	{
@@ -27,15 +30,15 @@ int main()
 		if (cmd != c_unrecognized)
 		{
 			printf("[DEBUG] command : %d\n", cmd);
-			// add_history(buffer);
+			add_history(buffer);
 			if (cmd == c_help)
 				help();
 			else if (cmd == c_dir)
 				dir();
 			else if (cmd == c_quit)
 				quit();
-			// else if (cmd == c_history)
-			// 	history();
+			else if (cmd == c_history)
+				show_history();
 			// else if (cmd == c_dump)
 			// 	dump();
 			// else if (cmd == c_edit)
@@ -49,8 +52,12 @@ int main()
 			// else if (cmd == c_opcodelist)
 			// 	opcodelist();
 		}
-
-		free(buffer);
+		else
+		{
+			// free buffer only when invalid command.
+			// otherwise, use it for command history.
+			free(buffer);
+		}
 	}
 	return 0;
 }
