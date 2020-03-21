@@ -16,8 +16,11 @@ char *ready_command(int max_len)
 	// (NULL is not counted)
 	// but in this case, (max : char array size -2) reason : check below.
 	fgets(buffer, max_len, stdin);
+
 	while (buffer[strlen(buffer) - 1] != '\n' && (c = getchar()) != '\n')
 		;
+	if (strlen(buffer) < 2)
+		return buffer;
 	// remove last lineberak --> maxLen = strlen(buffer) - 2
 	buffer[strlen(buffer) - 1] = '\0';
 	return buffer;
