@@ -5,6 +5,7 @@
 
 #include "myUtils.h"
 #include "help.h"
+#include "quit.h"
 
 #define MAX_INPUT_BUFFRE_SIZE 100
 
@@ -24,13 +25,14 @@ int main()
 
 		if (cmd != c_unrecognized)
 		{
+			// printf("[DEBUG] command : %d\n", cmd);
 			// add_history(buffer);
 			if (cmd == c_help)
 				help();
 			// else if (cmd == c_dir)
 			// 	dir();
-			// else if (cmd == c_quit)
-			// 	quit();
+			else if (cmd == c_quit)
+				quit();
 			// else if (cmd == c_history)
 			// 	history();
 			// else if (cmd == c_dump)
@@ -61,7 +63,7 @@ enum command get_command(char *buffer)
 	else if (strcmp(token, "d") == 0 || strcmp(token, "dir") == 0)
 		return c_dir;
 	else if (strcmp(token, "q") == 0 || strcmp(token, "quit") == 0)
-		return c_dir;
+		return c_quit;
 	else if (strcmp(token, "hi") == 0 || strcmp(token, "history") == 0)
 		return c_history;
 	else if (strcmp(token, "du") == 0 || strcmp(token, "dump") == 0)
