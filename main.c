@@ -10,7 +10,7 @@
 
 #define MAX_INPUT_BUFFRE_SIZE 100
 
-enum command get_command(char *);
+enum command _get_command(char *);
 
 int main()
 {
@@ -25,7 +25,7 @@ int main()
 		printf("[DEBUG] buffer  : %s\n", buffer);
 		tBuffer = lTrim(buffer);
 		printf("[DEBUG] tBuffer : %s\n", tBuffer);
-		cmd = get_command(tBuffer);
+		cmd = _get_command(tBuffer);
 
 		if (cmd != c_unrecognized)
 		{
@@ -62,7 +62,7 @@ int main()
 	return 0;
 }
 
-enum command get_command(char *buffer)
+enum command _get_command(char *buffer)
 {
 	if (!(*buffer))
 		return c_unrecognized;
