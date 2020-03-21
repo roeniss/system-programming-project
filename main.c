@@ -57,7 +57,10 @@ int main()
 
 enum command get_command(char *buffer)
 {
-	char *token = (char *)strtok(buffer, " ");
+	if (!(*buffer))
+		return c_unrecognized;
+
+	char *token = strtok(buffer, " ");
 
 	if (strcmp(token, "h") == 0 || strcmp(token, "help") == 0)
 		return c_help;
