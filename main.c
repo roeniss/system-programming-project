@@ -9,6 +9,8 @@
 #include "history.h"
 #include "dump.h"
 
+#include "opcode.h"
+
 #define MAX_INPUT_BUFFRE_SIZE 100
 
 enum command _get_command(char *);
@@ -19,6 +21,7 @@ int main()
 	enum command cmd;
 
 	init_history();
+	init_opcode();
 
 	while (1)
 	{
@@ -48,10 +51,10 @@ int main()
 			// 	fill();
 			// else if (cmd == c_reset)
 			// 	reset();
-			// else if (cmd == c_opcode)
-			// 	opcode();
-			// else if (cmd == c_opcodelist)
-			// 	opcodelist();
+			else if (cmd == c_opcode)
+				opcode();
+			else if (cmd == c_opcodelist)
+				opcodelist();
 		}
 		else
 		{
