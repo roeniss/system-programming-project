@@ -8,8 +8,8 @@
 #include "quit.h"
 #include "history.h"
 #include "dump.h"
-
 #include "opcode.h"
+#include "reset.h"
 
 #define MAX_INPUT_BUFFRE_SIZE 100
 
@@ -49,8 +49,8 @@ int main()
 			// 	edit();
 			// else if (cmd == c_fill)
 			// 	fill();
-			// else if (cmd == c_reset)
-			// 	reset();
+			else if (cmd == c_reset)
+				reset();
 			else if (cmd == c_opcode)
 				opcode();
 			else if (cmd == c_opcodelist)
