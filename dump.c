@@ -8,7 +8,7 @@
 #include "myUtils.h"
 #include "debug.h"
 
-#define MEMORY_SIZE 1048576
+#define MEMORY_SIZE 1048576 // [TODO] 이렇게 선언하면 다른데서도(ex. edit) 또 선언해줘야 되니까 다른 방법을 강구해야 함
 #define DEFAULT_DUMP_COL_LENGTH 160
 
 int dump_global_offset = 0;
