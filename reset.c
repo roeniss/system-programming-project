@@ -1,4 +1,4 @@
-#include "dump.h"
+#include "reset.h"
 
 void reset(char *VM, int size)
 {

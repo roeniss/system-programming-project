@@ -4,16 +4,17 @@
 #include <ctype.h>
 #include <stdbool.h>
 
+#include "dump.h"
 #include "myUtils.h"
 #include "debug.h"
 
-#define MEMORY_SIZE 1048576
+#define MEMORY_SIZE 1048576 // [TODO] 이렇게 선언하면 다른데서도(ex. edit) 또 선언해줘야 되니까 다른 방법을 강구해야 함
 #define DEFAULT_DUMP_COL_LENGTH 160
 
 int dump_global_offset = 0;
 char test_text[100] = "This is sample Program";
 
-bool _is_valid_hex(char *input)
+bool is_valid_hex(char *input)
 {
 	int length = strlen(input);
 	char target, filter[24] = "-1234567890abcdefABCDEF";
@@ -37,18 +38,18 @@ bool _validate_input(char *start, char *end)
 {
 	// vaildation number 1 : invalid paramter (not right number)
 	int s, e;
-	if (start && !_is_valid_hex(start))
+	if (start && !is_valid_hex(start))
 	{
 		printf("A paramter ('start') has invalid value : '%s'\n", start);
 		return false;
 	}
-	if (end && !_is_valid_hex(end))
+	if (end && !is_valid_hex(end))
 	{
-		printf("A paramter ('end') has invalid value : %s\n", end);
+		printf("A paramter ('end') has invalid value : '%s'\n", end);
 		return false;
 	}
 
-	// vaildation number 2 : invalid number (too big integer)
+	// vaildation number 2 : invalid number (too big or too small integer)
 	if (start)
 	{
 		s = strtoul(start, NULL, 16);
@@ -58,6 +59,8 @@ bool _validate_input(char *start, char *end)
 			return false;
 		}
 	}
+
+	// vaildation number 2 : invalid number (too big or too small integer)
 	if (end)
 	{
 		e = strtoul(end, NULL, 16);

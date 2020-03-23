@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "history.h"
+
 typedef struct _history_node *history_node;
 struct _history_node
 {

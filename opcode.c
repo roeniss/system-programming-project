@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "opcode.h"
+
 #define HASH_SIZE 20
 
 typedef struct _hash_block *hash_block;
