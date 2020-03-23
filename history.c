@@ -25,7 +25,9 @@ void add_history(char *cmd)
 {
 	history_node new_node;
 	new_node = (history_node)malloc(sizeof(struct _history_node));
-	new_node->command = cmd;
+	char *command_copy = (char *)malloc(sizeof(char) * strlen(cmd));
+	strcpy(command_copy, cmd);
+	new_node->command = command_copy;
 	new_node->next_node = NULL;
 	history_tail_node->next_node = new_node;
 	history_tail_node = new_node;
