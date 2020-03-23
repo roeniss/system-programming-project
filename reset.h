@@ -2,6 +2,6 @@
 #define RESET_H
 
 // reset virtual memory
-void reset(char *, int);
+extern void reset(char *, int);
 
 #endif

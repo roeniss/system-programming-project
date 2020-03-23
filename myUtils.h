@@ -3,7 +3,7 @@
 #ifndef MY_UNILS_H
 #define MY_UNILS_H
 
-enum command
+enum COMMAND
 {
 	c_help,
 	c_dir,
@@ -19,14 +19,18 @@ enum command
 };
 
 // check whether previous command works successfully or not
-bool flag_global;
+extern bool flag_global;
 
-char *init_buffer(int);
+// allocate new buffer memory
+extern char *init_buffer(int);
 
 // read (buffer - 2) size's stdin
-void ready_command(char *, int);
+extern void ready_command(char *, int);
 
 // trim left
-char *lTrim(char *);
+extern char *lTrim(char *);
+
+// determine what the paramter is command of
+enum COMMAND get_command(char *);
 
 #endif

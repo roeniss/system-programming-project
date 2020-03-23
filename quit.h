@@ -2,6 +2,6 @@
 #define QUIT_H
 
 // quit this shell
-void quit();
+extern void quit();
 
 #endif

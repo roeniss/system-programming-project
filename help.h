@@ -2,6 +2,6 @@
 #define HELP_H
 
 // show available commands
-void help();
+extern void help();
 
 #endif

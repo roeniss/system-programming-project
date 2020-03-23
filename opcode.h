@@ -2,12 +2,12 @@
 #define OPCODE_H
 
 // make hash table
-void init_opcode();
+extern void init_opcode();
 
 // show corresponding OP Code
-void opcode();
+extern void opcode();
 
 // show all OP Code
-void opcodelist();
+extern void opcodelist();
 
 #endif

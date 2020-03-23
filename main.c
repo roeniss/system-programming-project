@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 
 #include "myUtils.h"
 #include "help.h"
@@ -15,13 +14,9 @@
 
 #define MAX_INPUT_BUFFRE_SIZE 100
 
-enum command _get_command(char *);
-
 int main(int argc, char *argv[])
 {
 	char *buffer, *tBuffer, *VM, *hBuffer; // t for "trimmed", h for "history"
-	enum command cmd;
-	bool command_success;
 
 	buffer = init_buffer(MAX_INPUT_BUFFRE_SIZE);
 	hBuffer = init_buffer(MAX_INPUT_BUFFRE_SIZE);
@@ -43,73 +38,47 @@ int main(int argc, char *argv[])
 		tBuffer = lTrim(buffer);
 		if (is_debug_mode())
 			printf("[DEBUG] tBuffer : %s\n", tBuffer);
-		cmd = _get_command(tBuffer);
 
-		if (cmd != c_unrecognized)
+		switch (get_command(tBuffer))
 		{
-			if (is_debug_mode())
-				printf("[DEBUG] command : %d\n", cmd);
-			if (cmd == c_help)
-				help();
-			else if (cmd == c_dir)
-				dir();
-			else if (cmd == c_quit)
-				quit();
-			else if (cmd == c_history)
-			{
-				// history is exception
-				add_history(hBuffer);
-				flag_global = false;
-				show_history();
-			}
-			else if (cmd == c_dump)
-				dump(VM);
-			// else if (cmd == c_edit)
-			// 	edit();
-			// else if (cmd == c_fill)
-			// 	fill();
-			else if (cmd == c_reset)
-				reset(VM, MAX_INPUT_BUFFRE_SIZE);
-			else if (cmd == c_opcode)
-				opcode();
-			else if (cmd == c_opcodelist)
-				opcodelist();
+		case c_help:
+			help();
+			break;
+		case c_dir:
+			dir();
+			break;
+		case c_quit:
+			quit();
+			break;
+		case c_history:
+			// history is exception
+			add_history(hBuffer);
+			flag_global = false;
+			show_history();
+			break;
+		case c_dump:
+			dump(VM);
+			break;
+		// case c_edit:
+		// 	edit();
+		// 	break;
+		// case c_fill:
+		// 	fill();
+		// 	break;
+		case c_reset:
+			reset(VM, MAX_INPUT_BUFFRE_SIZE);
+			break;
+		case c_opcode:
+			opcode();
+			break;
+		case c_opcodelist:
+			opcodelist();
+			break;
+		case c_unrecognized:
+			break;
 		}
 		if (flag_global)
 			add_history(hBuffer);
-
-		// reset_buffer(buffer);
 	}
 	return 0;
-}
-
-enum command _get_command(char *buffer)
-{
-	if (!(*buffer))
-		return c_unrecognized;
-
-	char *token = strtok(buffer, " ");
-
-	if (strcmp(token, "h") == 0 || strcmp(token, "help") == 0)
-		return c_help;
-	else if (strcmp(token, "d") == 0 || strcmp(token, "dir") == 0)
-		return c_dir;
-	else if (strcmp(token, "q") == 0 || strcmp(token, "quit") == 0)
-		return c_quit;
-	else if (strcmp(token, "hi") == 0 || strcmp(token, "history") == 0)
-		return c_history;
-	else if (strcmp(token, "du") == 0 || strcmp(token, "dump") == 0)
-		return c_dump;
-	else if (strcmp(token, "e") == 0 || strcmp(token, "edit") == 0)
-		return c_edit;
-	else if (strcmp(token, "f") == 0 || strcmp(token, "fill") == 0)
-		return c_fill;
-	else if (strcmp(token, "reset") == 0)
-		return c_reset;
-	else if (strcmp(token, "opcode") == 0)
-		return c_opcode;
-	else if (strcmp(token, "opcodelist") == 0)
-		return c_opcodelist;
-	else
-		return c_unrecognized;
 }

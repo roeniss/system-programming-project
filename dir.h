@@ -2,6 +2,6 @@
 #define DIR_H
 
 // show current directory's files
-void dir();
+extern void dir();
 
 #endif
