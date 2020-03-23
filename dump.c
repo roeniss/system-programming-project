@@ -4,6 +4,7 @@
 #include <ctype.h>
 #include <stdbool.h>
 
+#include "dump.h"
 #include "myUtils.h"
 #include "debug.h"
 
