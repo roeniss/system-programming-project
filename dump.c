@@ -4,6 +4,8 @@
 #include <ctype.h>
 #include <stdbool.h>
 
+#include "myUtils.h"
+
 #define MEMORY_SIZE 1048576
 #define DEFAULT_DUMP_COL_LENGTH 160
 
@@ -13,12 +15,15 @@ char test_text[100] = "This is sample Program";
 bool _is_valid_hex(char *input)
 {
 	int length = strlen(input);
-	char target, filter[23] = "1234567890abcdefABCDEF-";
+	char target, filter[24] = "-1234567890abcdefABCDEF";
 	char *target_addr;
 	for (int i = 0; i < length; i++)
 	{
 		target = input[i];
-		target_addr = strchr(filter, target);
+		if (i == 0)
+			target_addr = strchr(filter, target);
+		else
+			target_addr = strchr(filter + 1, target);
 		if (target_addr == NULL)
 		{
 			return false;
@@ -33,7 +38,7 @@ bool _validate_input(char *start, char *end)
 	int s, e;
 	if (start && !_is_valid_hex(start))
 	{
-		printf("A paramter ('start') has invalid value : %s\n", start);
+		printf("A paramter ('start') has invalid value : '%s'\n", start);
 		return false;
 	}
 	if (end && !_is_valid_hex(end))
@@ -48,7 +53,7 @@ bool _validate_input(char *start, char *end)
 		s = strtoul(start, NULL, 16);
 		if (s >= 1048576 || s < 0)
 		{
-			printf("A paramter ('start') havs wrong address : %s\n", start);
+			printf("A paramter ('start') havs wrong address : '%s'\n", start);
 			return false;
 		}
 	}
@@ -57,7 +62,7 @@ bool _validate_input(char *start, char *end)
 		e = strtoul(end, NULL, 16);
 		if (e >= 1048576 || e < 0)
 		{
-			printf("A paramter ('end') has wrong address : %s\n", end);
+			printf("A paramter ('end') has wrong address : '%s'\n", end);
 			return false;
 		}
 	}
@@ -159,7 +164,24 @@ char *init_vm()
 	return VM;
 }
 
-void dump()
+void _get_range(char *start, char *end, int *start_num, int *end_num)
+{
+	if (start)
+		*start_num = strtoul(start, NULL, 16);
+	else
+	{
+		*start_num = dump_global_offset;
+		dump_global_offset += 160;
+		if (dump_global_offset > 0xFFFFF)
+			dump_global_offset = 0;
+	}
+	if (end)
+		*end_num = strtoul(end, NULL, 16);
+	else
+		*end_num = *start_num + 159;
+}
+
+void dump(char *VM)
 {
 	char *start = strtok(NULL, ",");
 	char *end = strtok(NULL, " ");
@@ -167,23 +189,12 @@ void dump()
 
 	bool pass_validation = _validate_input(start, end);
 	if (!pass_validation)
-		return;
-
-	if (start)
-		start_num = strtoul(start, NULL, 16);
-	else
 	{
-		start_num = dump_global_offset;
-		dump_global_offset += 160;
-		if (dump_global_offset > 0xFFFFF)
-			dump_global_offset = 0;
+		flag_global = false;
+		return;
 	}
 
-	if (end)
-		end_num = strtoul(end, NULL, 16);
-	else
-		end_num = start_num + 159;
-
+	_get_range(start, end, &start_num, &end_num);
 	printf("[DEBUG] start, end, start_num, end_num, start_num, end_num : \n[DEBUG] %s, %s, %d, %d, %X, %X\n", start, end, start_num, end_num, start_num, end_num);
 
 	_show_lines(VM, start_num, end_num);
