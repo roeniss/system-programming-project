@@ -1,6 +1,10 @@
 #include "dump.h"
 
-void reset()
+void reset(char *VM, int size)
 {
-	init_vm();
+
+	for (int i = 0; i < size; i++)
+	{
+		VM[i] = '\0';
+	}
 }

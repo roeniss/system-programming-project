@@ -7,7 +7,6 @@
 #define MEMORY_SIZE 1048576
 #define DEFAULT_DUMP_COL_LENGTH 160
 
-char VM[MEMORY_SIZE];
 int dump_global_offset = 0;
 char test_text[100] = "This is sample Program";
 
@@ -73,7 +72,7 @@ bool _validate_input(char *start, char *end)
 	return true;
 }
 
-void adjust_test_case()
+void adjust_test_case(char *VM)
 {
 	// copy sample screenshot
 	for (int i = 25; i <= 29; i++)
@@ -108,7 +107,7 @@ char _get_ascii(char value)
 }
 
 // no start/end parameters
-void _show_lines(int start_num, int end_num)
+void _show_lines(char *VM, int start_num, int end_num)
 {
 	printf("[DEBUG] start/end : %d %d \n", start_num, end_num);
 	int offset;
@@ -145,14 +144,19 @@ void _show_lines(int start_num, int end_num)
 	}
 }
 
-void init_vm()
+char *init_vm()
 {
+	char *VM;
+	VM = (char *)malloc(sizeof(char) * MEMORY_SIZE);
+
 	for (int i = 0; i < MEMORY_SIZE; i++)
 	{
 		VM[i] = '\0';
 	}
 
-	adjust_test_case();
+	adjust_test_case(VM);
+
+	return VM;
 }
 
 void dump()
@@ -182,5 +186,5 @@ void dump()
 
 	printf("[DEBUG] start, end, start_num, end_num, start_num, end_num : \n[DEBUG] %s, %s, %d, %d, %X, %X\n", start, end, start_num, end_num, start_num, end_num);
 
-	_show_lines(start_num, end_num);
+	_show_lines(VM, start_num, end_num);
 }
