@@ -1,3 +1,5 @@
+#include <stdbool.h>
+
 #ifndef MY_UNILS_H
 #define MY_UNILS_H
 
@@ -16,10 +18,15 @@ enum command
 	c_unrecognized
 };
 
-// read (buffer - 1) size's stdin
-char *ready_command(int);
+// check whether previous command works successfully or not
+bool flag_global;
 
-// trim left for target string
+char *init_buffer(int);
+
+// read (buffer - 2) size's stdin
+void ready_command(char *, int);
+
+// trim left
 char *lTrim(char *);
 
 #endif

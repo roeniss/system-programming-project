@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "myUtils.h"
 #include "help.h"
@@ -17,8 +18,12 @@ enum command _get_command(char *);
 
 int main()
 {
-	char *buffer, *tBuffer; // t for "trimmed", tok for "tokenized"
+	char *buffer, *tBuffer, *VM, *hBuffer; // t for "trimmed", h for "history"
 	enum command cmd;
+	bool command_success;
+
+	buffer = init_buffer(MAX_INPUT_BUFFRE_SIZE);
+	hBuffer = init_buffer(MAX_INPUT_BUFFRE_SIZE);
 
 	init_history();
 	init_opcode();
@@ -26,16 +31,17 @@ int main()
 
 	while (1)
 	{
-		buffer = ready_command(MAX_INPUT_BUFFRE_SIZE);
-		printf("[DEBUG] buffer  : %s\n", buffer);
+		flag_global = true;
+		ready_command(buffer, MAX_INPUT_BUFFRE_SIZE);
+		strcpy(hBuffer, buffer);
+		// printf("[DEBUG] buffer  : %s\n", buffer);
 		tBuffer = lTrim(buffer);
-		printf("[DEBUG] tBuffer : %s\n", tBuffer);
+		// printf("[DEBUG] tBuffer : %s\n", tBuffer);
 		cmd = _get_command(tBuffer);
 
 		if (cmd != c_unrecognized)
 		{
-			printf("[DEBUG] command : %d\n", cmd);
-			add_history(buffer);
+			// printf("[DEBUG] command : %d\n", cmd);
 			if (cmd == c_help)
 				help();
 			else if (cmd == c_dir)
@@ -43,26 +49,29 @@ int main()
 			else if (cmd == c_quit)
 				quit();
 			else if (cmd == c_history)
+			{
+				// history is exception
+				add_history(hBuffer);
+				flag_global = false;
 				show_history();
+			}
 			else if (cmd == c_dump)
-				dump();
+				dump(VM);
 			// else if (cmd == c_edit)
 			// 	edit();
 			// else if (cmd == c_fill)
 			// 	fill();
 			else if (cmd == c_reset)
-				reset();
+				reset(VM, MAX_INPUT_BUFFRE_SIZE);
 			else if (cmd == c_opcode)
 				opcode();
 			else if (cmd == c_opcodelist)
 				opcodelist();
 		}
-		else
-		{
-			// free buffer only when invalid command.
-			// otherwise, use it for command history.
-			free(buffer);
-		}
+		if (flag_global)
+			add_history(hBuffer);
+
+		// reset_buffer(buffer);
 	}
 	return 0;
 }

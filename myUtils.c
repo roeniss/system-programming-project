@@ -5,11 +5,15 @@
 
 #include "myUtils.h"
 
-char *ready_command(int max_len)
+char *init_buffer(int max_len)
+{
+	char *buffer = (char *)malloc(sizeof(char) * max_len);
+	return buffer;
+}
+
+void ready_command(char *buffer, int max_len)
 {
 	int c;
-	char *buffer;
-	buffer = (char *)malloc(max_len * sizeof(char));
 
 	printf("sicsim> ");
 	// strlen(buffer) become read data size. (maxLen: char array size - 1)
@@ -21,11 +25,10 @@ char *ready_command(int max_len)
 		;
 
 	if (strlen(buffer) < 2)
-		return buffer;
+		return;
 
 	// remove last lineberak --> maxLen = strlen(buffer) - 2
 	buffer[strlen(buffer) - 1] = '\0';
-	return buffer;
 }
 
 char *lTrim(char *buffer)
