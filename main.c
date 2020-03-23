@@ -22,6 +22,7 @@ int main()
 
 	init_history();
 	init_opcode();
+	init_vm();
 
 	while (1)
 	{
