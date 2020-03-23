@@ -6,6 +6,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include "dir.h"
+
 void dir()
 {
 	DIR *dr = opendir(".");

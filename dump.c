@@ -5,6 +5,7 @@
 #include <stdbool.h>
 
 #include "myUtils.h"
+#include "debug.h"
 
 #define MEMORY_SIZE 1048576
 #define DEFAULT_DUMP_COL_LENGTH 160
@@ -114,7 +115,8 @@ char _get_ascii(char value)
 // no start/end parameters
 void _show_lines(char *VM, int start_num, int end_num)
 {
-	printf("[DEBUG] start/end : %d %d \n", start_num, end_num);
+	if (is_debug_mode())
+		printf("[DEBUG] start/end : %d %d \n", start_num, end_num);
 	int offset;
 	int cur_idx;
 	for (int line = (start_num) / 16; line <= (end_num) / 16; line++)
@@ -195,7 +197,8 @@ void dump(char *VM)
 	}
 
 	_get_range(start, end, &start_num, &end_num);
-	printf("[DEBUG] start, end, start_num, end_num, start_num, end_num : \n[DEBUG] %s, %s, %d, %d, %X, %X\n", start, end, start_num, end_num, start_num, end_num);
+	if (is_debug_mode())
+		printf("[DEBUG] start, end, start_num, end_num, start_num, end_num : \n[DEBUG] %s, %s, %d, %d, %X, %X\n", start, end, start_num, end_num, start_num, end_num);
 
 	_show_lines(VM, start_num, end_num);
 }

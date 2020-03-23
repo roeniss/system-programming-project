@@ -11,12 +11,13 @@
 #include "dump.h"
 #include "opcode.h"
 #include "reset.h"
+#include "debug.h"
 
 #define MAX_INPUT_BUFFRE_SIZE 100
 
 enum command _get_command(char *);
 
-int main()
+int main(int argc, char *argv[])
 {
 	char *buffer, *tBuffer, *VM, *hBuffer; // t for "trimmed", h for "history"
 	enum command cmd;
@@ -24,6 +25,9 @@ int main()
 
 	buffer = init_buffer(MAX_INPUT_BUFFRE_SIZE);
 	hBuffer = init_buffer(MAX_INPUT_BUFFRE_SIZE);
+
+	if (argc > 1)
+		check_debug_mode(argv);
 
 	init_history();
 	init_opcode();
@@ -34,14 +38,17 @@ int main()
 		flag_global = true;
 		ready_command(buffer, MAX_INPUT_BUFFRE_SIZE);
 		strcpy(hBuffer, buffer);
-		// printf("[DEBUG] buffer  : %s\n", buffer);
+		if (is_debug_mode())
+			printf("[DEBUG] buffer  : %s\n", buffer);
 		tBuffer = lTrim(buffer);
-		// printf("[DEBUG] tBuffer : %s\n", tBuffer);
+		if (is_debug_mode())
+			printf("[DEBUG] tBuffer : %s\n", tBuffer);
 		cmd = _get_command(tBuffer);
 
 		if (cmd != c_unrecognized)
 		{
-			// printf("[DEBUG] command : %d\n", cmd);
+			if (is_debug_mode())
+				printf("[DEBUG] command : %d\n", cmd);
 			if (cmd == c_help)
 				help();
 			else if (cmd == c_dir)
