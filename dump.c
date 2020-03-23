@@ -161,7 +161,8 @@ char *init_vm()
 		VM[i] = '\0';
 	}
 
-	adjust_test_case(VM);
+	if (is_debug_mode())
+		adjust_test_case(VM);
 
 	return VM;
 }
