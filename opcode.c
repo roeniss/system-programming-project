@@ -17,16 +17,15 @@ hash_block hash_table[HASH_SIZE];
 
 int _get_hash(char *mne)
 {
-	int mul = 1;
-	int x = 0;
+	int mul = 1, hash = 0;
 	for (int i = 0; mne[i] != 0; i++)
 	{
-		x = ((mne[i] * mul) + x) % HASH_SIZE;
+		hash = ((mne[i] * mul) + hash) % HASH_SIZE;
 		mul *= 17;
 	}
-	if (x < 0)
-		x = -x;
-	return x % HASH_SIZE;
+	if (hash < 0)
+		hash = -hash;
+	return hash % HASH_SIZE;
 }
 
 void _add_hash(int co, char *mne, char *cycle)
