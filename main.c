@@ -77,6 +77,7 @@ int main(int argc, char *argv[])
 			opcodelist();
 			break;
 		case c_unrecognized:
+			flag_global = false;
 			break;
 		}
 		if (flag_global)

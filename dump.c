@@ -15,6 +15,8 @@ int dump_global_offset = 0;
 
 bool is_valid_hex(char *input)
 {
+	if (!input)
+		return false;
 	int length = strlen(input);
 	char target, filter[24] = "-1234567890abcdefABCDEF";
 	char *target_addr;

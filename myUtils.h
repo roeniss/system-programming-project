@@ -3,7 +3,7 @@
 #ifndef MY_UNILS_H
 #define MY_UNILS_H
 
-enum COMMAND
+typedef enum COMMAND
 {
 	c_help,
 	c_dir,
@@ -16,7 +16,7 @@ enum COMMAND
 	c_opcode,
 	c_opcodelist,
 	c_unrecognized
-};
+} command;
 
 // check whether previous command works successfully or not
 extern bool flag_global;
