@@ -18,20 +18,26 @@ int dir(void)
 	struct dirent *dd;
 	struct stat buf;
 
-	int no = 0;
+	int no = 0;   //serial number of speicifc file
+	int cols = 0; // for prettier formatting
 	for (dd = readdir(dr); dd; dd = readdir(dr), ++no)
 	{
-		printf("%-10s ", dd->d_name);
+		cols++;
+		printf("%14s", dd->d_name);
 		stat(dd->d_name, &buf);
 
-		if (no < 2)
-			printf(" ");
-		else if (S_ISDIR(buf.st_mode))
-			printf("/ ");
+		if (S_ISDIR(buf.st_mode))
+			printf("/\t");
 		else if (buf.st_mode & S_IXUSR || buf.st_mode & S_IXGRP || buf.st_mode & S_IXOTH)
-			printf("* ");
+			printf("*\t");
 		else
-			printf(" ");
+			printf("\t");
+
+		if (cols == 3)
+		{
+			cols = 0;
+			printf("\n");
+		}
 	}
 	printf("\n");
 	closedir(dr);

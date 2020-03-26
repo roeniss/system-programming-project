@@ -39,15 +39,15 @@ int dump(char *start, char *end)
 	if (is_debug_mode())
 		printf("[DEBUG] start, end, start_num, end_num, start_num_hex, end_num_hex : \n[DEBUG] %s, %s, %d, %d, %X, %X\n", start, end, s, e, s, e);
 
-	for (int line = s / DUMP_ROWS; line <= e / DUMP_ROWS; line++)
+	for (int line = s / DUMP_COLS; line <= e / DUMP_COLS; line++)
 	{
-		offset = line * DUMP_ROWS;
+		offset = line * DUMP_COLS;
 		if (offset >= MEMORY_SIZE)
 			break;
 
 		printf("%05X ", offset);
 
-		for (int idx = 0; idx < DUMP_ROWS; idx++)
+		for (int idx = 0; idx < DUMP_COLS; idx++)
 		{
 			cur = idx + offset;
 			if (cur < s || cur > e)
@@ -58,7 +58,7 @@ int dump(char *start, char *end)
 
 		printf("; ");
 
-		for (int idx = 0; idx < DUMP_ROWS; idx++)
+		for (int idx = 0; idx < DUMP_COLS; idx++)
 		{
 			cur = idx + offset;
 			if (cur < s || cur > e)

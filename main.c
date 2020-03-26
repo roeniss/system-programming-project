@@ -48,40 +48,39 @@ struct Buffer
 };
 typedef struct Buffer Buffer;
 
-// extern variables
+// extern/global variables
 int MEMORY_SIZE = 1048576,
 	DUMP_COLS = 16,
 	DUMP_ROWS = 10;
 char *VM;
+Buffer *buffer; // buffer is not actual extern, but here for easy-access.
 
 static void _init_vm(char **VM);
-static void _init_buffer(Buffer buffer);
-void _receive_command(char *buffer);
-static void _parse_command(Buffer buffer);
-static void _execute_command(Buffer buffer, int *command_flag);
+static void _init_buffer();
+void _receive_command();
+static void _parse_command();
+static void _execute_command(int *command_flag);
 static Command _get_command(char *token);
 static char *_left_trim(char *input);
 
 int main(int argc, char *argv[])
 {
 	int command_flag = 0;
-	Buffer buffer;
 
 	if (argc > 1)
 		check_debug_mode(argc, argv);
 
 	_init_vm(&VM);
-	_init_buffer(buffer);
+	_init_buffer();
 	init_history();
 	init_opcode();
 
 	while (true)
 	{
-		buffer.input = "asdasd";
 		command_flag = 0; // '0' means 'no error'
-		_receive_command(buffer.input);
-		_parse_command(buffer);
-		_execute_command(buffer, &command_flag);
+		_receive_command();
+		_parse_command();
+		_execute_command(&command_flag);
 	}
 	return 0;
 }
@@ -103,13 +102,14 @@ void _init_vm(char **VM)
 //
 // Allocate buffer struct.
 //
-void _init_buffer(Buffer buffer)
+void _init_buffer()
 {
-	buffer.input = (char *)malloc(sizeof(char) * MAX_INPUT_BUFFER_SIZE);
-	buffer.input_copy = (char *)malloc(sizeof(char) * MAX_INPUT_BUFFER_SIZE);
-	buffer.parameter = (char **)malloc(sizeof(char *) * MAX_PARAMETERS_COUNT);
+	buffer = (Buffer *)malloc(sizeof(Buffer));
+	buffer->input = (char *)malloc(sizeof(char) * MAX_INPUT_BUFFER_SIZE);
+	buffer->input_copy = (char *)malloc(sizeof(char) * MAX_INPUT_BUFFER_SIZE);
+	buffer->parameter = (char **)malloc(sizeof(char *) * MAX_PARAMETERS_COUNT);
 	for (int i = 0; i < MAX_PARAMETERS_COUNT; i++)
-		buffer.parameter[i] = (char *)malloc(sizeof(char) * MAX_PARAMETER_SIZE);
+		buffer->parameter[i] = (char *)malloc(sizeof(char) * MAX_PARAMETER_SIZE);
 }
 
 //
@@ -117,49 +117,48 @@ void _init_buffer(Buffer buffer)
 // Basically, this function corresponds to
 // input("sicsim> ") function in Python.
 //
-void _receive_command(char *input)
+void _receive_command()
 {
-	int c; // tmp
+	int tmpChar;
 	printf("sicsim> ");
-	printf("%s--", input);
 
 	// strlen(input) become read data size :  maxLen = strlen(input) - 1
 	// because NULL is not counted.
 	// But in this case :  maxLen = strlen(input) - 2
 	// because it removes last linebreak.
-	fgets(input, MAX_INPUT_BUFFER_SIZE, stdin);
+	fgets(buffer->input, MAX_INPUT_BUFFER_SIZE, stdin);
 
-	while (input[strlen(input) - 1] != '\n' && (c = getchar()) != '\n')
+	while (buffer->input[strlen(buffer->input) - 1] != '\n' && (tmpChar = getchar()) != '\n')
 		;
 
-	if (strlen(input) < 2)
+	if (strlen(buffer->input) < 2)
 		return;
 
-	input[strlen(input) - 1] = '\0';
+	buffer->input[strlen(buffer->input) - 1] = '\0';
 }
 
-void _parse_command(Buffer buffer)
+void _parse_command()
 {
 	// 1. Get input
-	strcpy(buffer.input, _left_trim(buffer.input));
+	strcpy(buffer->input, _left_trim(buffer->input));
 	// store left-trimmed full input for adding to history list
-	strcpy(buffer.input_copy, buffer.input);
+	strcpy(buffer->input_copy, buffer->input);
 
 	// 2. Get command
-	buffer.command = _get_command(strtok(buffer.input, " \t"));
+	buffer->command = _get_command(strtok(buffer->input, " \t"));
 
 	// 3. Get parameters
 	for (int i = 0; i < MAX_PARAMETERS_COUNT; i++)
-		buffer.parameter[i] = strtok(NULL, ", \t");
+		buffer->parameter[i] = strtok(NULL, ", \t");
 
 	if (is_debug_mode())
 		printf("[DEBUG] \ninput : %s, \ncommand : %s, \ncommand_num : %d, \nparameter 1 : %s, \nparameter 2 : %s, \nparameter 3 : %s.\n",
-			   buffer.input_copy, buffer.input, buffer.command, buffer.parameter[0], buffer.parameter[1], buffer.parameter[2]);
+			   buffer->input_copy, buffer->input, buffer->command, buffer->parameter[0], buffer->parameter[1], buffer->parameter[2]);
 }
 
-void _execute_command(Buffer buffer, int *command_flag)
+void _execute_command(int *command_flag)
 {
-	switch (buffer.command)
+	switch (buffer->command)
 	{
 	case c_help:
 		*command_flag = help();
@@ -172,25 +171,25 @@ void _execute_command(Buffer buffer, int *command_flag)
 		break;
 	case c_history:
 		// only this command needs to add history log before execution.
-		add_history(buffer.input);
+		add_history(buffer->input);
 		*command_flag = history();
 		// so, suppress the returned command flag by force
 		*command_flag = 1;
 		break;
 	case c_dump:
-		*command_flag = dump(buffer.parameter[0], buffer.parameter[1]);
+		*command_flag = dump(buffer->parameter[0], buffer->parameter[1]);
 		break;
 	case c_edit:
-		*command_flag = edit(buffer.parameter[0], buffer.parameter[1]);
+		*command_flag = edit(buffer->parameter[0], buffer->parameter[1]);
 		break;
 	case c_fill:
-		*command_flag = fill(buffer.parameter[0], buffer.parameter[1], buffer.parameter[2]);
+		*command_flag = fill(buffer->parameter[0], buffer->parameter[1], buffer->parameter[2]);
 		break;
 	case c_reset:
 		*command_flag = reset();
 		break;
 	case c_opcode:
-		*command_flag = opcode(buffer.parameter[0]);
+		*command_flag = opcode(buffer->parameter[0]);
 		break;
 	case c_opcodelist:
 		*command_flag = opcodelist();
@@ -200,7 +199,7 @@ void _execute_command(Buffer buffer, int *command_flag)
 		break;
 	}
 	if (*command_flag == 0)
-		add_history(buffer.input_copy);
+		add_history(buffer->input_copy);
 }
 
 Command _get_command(char *token)
