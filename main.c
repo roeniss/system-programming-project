@@ -12,6 +12,7 @@
 #include "reset.h"
 #include "debug.h"
 #include "edit.h"
+#include "fill.h"
 
 #define MAX_INPUT_BUFFRE_SIZE 100
 #define MEMORY_SIZE 1048576
@@ -64,9 +65,9 @@ int main(int argc, char *argv[])
 		case c_edit:
 			edit(VM);
 			break;
-		// case c_fill:
-		// 	fill();
-		// 	break;
+		case c_fill:
+			fill(VM);
+			break;
 		case c_reset:
 			reset(VM, MEMORY_SIZE);
 			break;
