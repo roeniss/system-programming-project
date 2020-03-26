@@ -32,9 +32,11 @@
 - [x] d\[ir\] 구현 --> "dirent.h, sys/stat.h 를 참조합니다"
 - [x] q\[uit\] 구현 --> sub function에서 바로 종료가 되나?
 - [x] hi\[story\] 구현 --> "정의되지 않은 명령어 및 잘못된 명령어가 입력되었을 경우 history 에 추가하지않습니다" / "현재까지 사용한 명령어들을 순서대로 번호와 함께 보여준다. 가장 최근 사용한 명령어가 리스트의 하단에 오도록 한다" / "만약 history 가 비어있다면 아무것도 출력하지 않고 다시 입력 프롬프트로 돌아옵니다." / "linked list"
-- [ ] du\[mp\] [start, end] 구현 --> TBD
-- [ ] e\[dit\] address, value 구현 --> TBD
-- [ ] f\[ill\] start, end, value 구현 --> TBD
-- [ ] reset 구현 --> TBD
-- [ ] opcode mnemonic 구현 --> "명령어를 입력하면 해당하는 opcode 를 출력한다." / "sicsim 프로그램을 실행시킬 때 opcode.txt 파일의 내용을 읽어 들여서 아래와 같은 모양의 Hash Table 을 만들어야 합니다. Hash Table 의 사이즈는 20" / "충돌이 생기는 mnemonic 들은 위의 그림과 같이 반드시 linked list 의 형태로 구현이 되어야 합니다."
-- [ ] opcodelist 구현 --> "opcode Hash Table 의 내용을 아래와 같은 형식으로 출력합니다"
+- [x] du\[mp\] [start, end] 구현
+- [x] e\[dit\] address, value 구현
+- [x] f\[ill\] start, end, value 구현
+- [x] reset 구현
+- [x] opcode mnemonic 구현 --> "명령어를 입력하면 해당하는 opcode 를 출력한다." / "sicsim 프로그램을 실행시킬 때 opcode.txt 파일의 내용을 읽어 들여서 아래와 같은 모양의 Hash Table 을 만들어야 합니다. Hash Table 의 사이즈는 20" / "충돌이 생기는 mnemonic 들은 위의 그림과 같이 반드시 linked list 의 형태로 구현이 되어야 합니다."
+- [x] opcodelist 구현 --> "opcode Hash Table 의 내용을 아래와 같은 형식으로 출력합니다"
+
+- [ ] 리팩토링
