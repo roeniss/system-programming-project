@@ -12,7 +12,6 @@
 #define DEFAULT_DUMP_COL_LENGTH 160
 
 int dump_global_offset = 0;
-char test_text[100] = "This is sample Program";
 
 bool is_valid_hex(char *input)
 {
@@ -84,6 +83,8 @@ bool _validate_input(char *start, char *end)
 void adjust_test_case(char *VM)
 {
 	// copy sample screenshot
+	char test_text[100] = "This is sample Program";
+
 	for (int i = 25; i <= 29; i++)
 		VM[i] = 0x20;
 	for (int i = 30; i <= 39; i++)
@@ -102,7 +103,7 @@ void adjust_test_case(char *VM)
 		VM[i] = 0x20;
 
 	for (int i = 59; i < 59 + strlen(test_text); i++)
-		VM[i] = test_text[i - 59];
+		strncpy(&VM[i], &(test_text[i - 59]), sizeof(char));
 	for (int i = 59 + strlen(test_text); i < 999; i++)
 		VM[i] = '.';
 }
