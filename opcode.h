@@ -1,13 +1,19 @@
 #ifndef OPCODE_H
 #define OPCODE_H
 
-// make hash table
-extern void init_opcode();
+//
+// Make a hash table for opcodes.
+//
+void init_opcode(void);
 
-// show corresponding OP Code
-extern void opcode();
+//
+// Show corresponding opcode to given mnemonic.
+//
+int opcode(char *mnemonic);
 
-// show all OP Code
-extern void opcodelist();
+//
+// Show all available opcode
+//
+int opcodelist(void);
 
 #endif

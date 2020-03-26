@@ -8,7 +8,11 @@
 
 #include "dir.h"
 
-void dir()
+//
+// Use dirent() to get iterable file list,
+// use stat() to get file's information.
+//
+int dir(void)
 {
 	DIR *dr = opendir(".");
 	struct dirent *dd;
@@ -17,7 +21,7 @@ void dir()
 	int no = 0;
 	for (dd = readdir(dr); dd; dd = readdir(dr), ++no)
 	{
-		printf("%10s", dd->d_name);
+		printf("%-10s ", dd->d_name);
 		stat(dd->d_name, &buf);
 
 		if (no < 2)
@@ -31,4 +35,5 @@ void dir()
 	}
 	printf("\n");
 	closedir(dr);
+	return 0;
 }

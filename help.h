@@ -1,7 +1,9 @@
 #ifndef HELP_H
 #define HELP_H
 
-// show available commands
-extern void help();
+//
+// Show available commands.
+//
+int help(void);
 
 #endif

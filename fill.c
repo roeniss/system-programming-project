@@ -7,68 +7,97 @@
 #include "myUtils.h"
 #include "debug.h"
 
-#define MEMORY_SIZE 1048576
+extern int MEMORY_SIZE;
+extern char*VM;
 
-static bool _is_valid_input(char *start, char *end, char *value)
+static bool _validate_input(char *start, char *end, char *value);
+
+int fill(char *start, char *end, char *value)
 {
-	int t1, t2, t3; // t for 'test'
-	if (!start || !end || !value)
-	{
-		printf("Insuffcient paramter (start : %s, end : %s, value : %s)\n", start, end, value);
-		flag_global = false;
-		return false;
-	}
-	if (!is_valid_hex(start) || !is_valid_hex(end) || !is_valid_hex(value))
-	{
-		printf("Invalid paramter (start : %s, end : %s, value : %s)\n", start, end, value);
-		flag_global = false;
-		return false;
-	}
-
-	t1 = strtoul(start, NULL, 16);
-	t2 = strtoul(end, NULL, 16);
-	t3 = strtoul(value, NULL, 16);
-
-	if (t1 < 0 || t2 < 0 || t1 > MEMORY_SIZE || t2 > MEMORY_SIZE || t1 > t2)
-	{
-		printf("Invalid Range (start : %s, end : %s)\n", start, end);
-		flag_global = false;
-		return false;
-	}
-	if (t3 > 0xFF || t3 < 0)
-	{
-		printf("Invalid value to fill with (value : %s)\n", value);
-		flag_global = false;
-		return false;
-	}
-	return true;
-}
-void fill(char *VM)
-{
-	char *start = strtok(NULL, ", \t");
-	char *end = strtok(NULL, ", \t");
-	char *value = strtok(NULL, ", \t");
-	int s, e, v;
+	int s, e, val;
 
 	if (is_debug_mode())
-	{
 		printf("[DEBUG] Input --> start : %s, end : %s, value : %s\n", start, end, value);
-	}
 
-	if (!_is_valid_input(start, end, value))
-		return;
+	if (!_validate_input(start, end, value))
+		return 1;
 
 	s = strtoul(start, NULL, 16);
 	e = strtoul(end, NULL, 16);
-	v = strtoul(value, NULL, 16);
-
-	if (is_debug_mode())
-	{
-		printf("[DEBUG] Input (int) --> start : %x, end : %x, value : %x\n", s, e, v);
-	}
+	val = strtoul(value, NULL, 16);
 
 	for (int i = s; i <= e; i++)
+		VM[i] = val;
+
+	return 0;
+}
+
+bool _validate_input(char *start, char *end, char *value)
+{
+	int s, e, val;
+
+	// 1 : Insuffcient paramter
+	if (!start)
 	{
-		VM[i] = v;
+		printf("Insuffcient paramter (start) : '%s'\n", start);
+		return false;
 	}
+	if (!end)
+	{
+		printf("Insuffcient paramter (end) : '%s'\n", end);
+		return false;
+	}
+	if (!value)
+	{
+		printf("Insuffcient paramter (value) : '%s'\n", value);
+		return false;
+	}
+
+	// 2 : Invalid paramter
+	if (!is_valid_hex(start))
+	{
+		printf("Invalid paramter (start) : '%s'\n", start);
+		return false;
+	}
+	if (!is_valid_hex(end))
+	{
+		printf("Invalid paramter (end) : '%s'\n", end);
+		return false;
+	}
+	if (!is_valid_hex(value))
+	{
+		printf("Invalid paramter (value) : '%s'\n", value);
+		return false;
+	}
+
+	s = strtoul(start, NULL, 16);
+	e = strtoul(end, NULL, 16);
+	val = strtoul(value, NULL, 16);
+
+	// 3 : Unreachable address
+	if (s < 0 || MEMORY_SIZE <= s)
+	{
+		printf("Unreachable address (start) : '%s'\n", start);
+		return false;
+	}
+	if (e < 0 || MEMORY_SIZE <= e)
+	{
+		printf("Unreachable address (end) : '%s'\n", end);
+		return false;
+	}
+
+	// 4 : Wrong range
+	if (s > e)
+	{
+		printf("Wrong range (start ~ end) : '%s ~ %s'\n", start, end);
+		return false;
+	}
+
+	// 5 : Unwritable address
+	if (val < 0 || 0xFF < val)
+	{
+		printf("Unwritable value (value) : '%s'\n", value);
+		return false;
+	}
+	return true;
 }

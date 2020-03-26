@@ -1,10 +1,11 @@
 #include "reset.h"
 
-void reset(char *VM, int size)
+extern char*VM;
+
+int reset(void)
 {
 
-	for (int i = 0; i < size; i++)
-	{
+	for (int i = 0; i < sizeof(VM); i++)
 		VM[i] = '\0';
-	}
+	return 0;
 }

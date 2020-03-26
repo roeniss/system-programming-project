@@ -8,106 +8,123 @@
 #include "myUtils.h"
 #include "debug.h"
 
-#define MEMORY_SIZE 1048576 // [TODO] 이렇게 선언하면 다른데서도(ex. edit) 또 선언해줘야 되니까 다른 방법을 강구해야 함
-#define DEFAULT_DUMP_COL_LENGTH 160
+extern int MEMORY_SIZE;
+extern int DUMP_COLS;
+extern int DUMP_ROWS;
+extern char *VM;
 
-int dump_global_offset = 0;
+static int global_dump_offset = 0;
+static bool _validate_input(char *start, char *end);
+static void _convert_to_number(char *start, char *end, int *s, int *e);
+static char _get_ascii(char value);
 
-bool is_valid_hex(char *input)
+//
+// First, check if the given parameters ('start', 'end') are vaild or not.
+// if invalid, dump() will return 1 (error) with printf().
+// if 'start' is not given, 'start' point will follow
+// internal value, 'global_dump_offset'.
+// if 'start' is given but 'end' is not given,
+// 'end' will be set to ('start' + DUMP_COLS * DUNP_ROWS - 1)
+//
+int dump(char *start, char *end)
 {
-	if (!input)
-		return false;
-	int length = strlen(input);
-	char target, filter[24] = "-1234567890abcdefABCDEF";
-	char *target_addr;
-	for (int i = 0; i < length; i++)
+	int s, e;
+	int offset, cur;
+
+	if (!_validate_input(start, end))
+		return 1;
+
+	_convert_to_number(start, end, &s, &e);
+
+	if (is_debug_mode())
+		printf("[DEBUG] start, end, start_num, end_num, start_num_hex, end_num_hex : \n[DEBUG] %s, %s, %d, %d, %X, %X\n", start, end, s, e, s, e);
+
+	for (int line = s / DUMP_ROWS; line <= e / DUMP_ROWS; line++)
 	{
-		target = input[i];
-		if (i == 0)
-			target_addr = strchr(filter, target);
-		else
-			target_addr = strchr(filter + 1, target);
-		if (target_addr == NULL)
+		offset = line * DUMP_ROWS;
+		if (offset >= MEMORY_SIZE)
+			break;
+
+		printf("%05X ", offset);
+
+		for (int idx = 0; idx < DUMP_ROWS; idx++)
 		{
-			return false;
+			cur = idx + offset;
+			if (cur < s || cur > e)
+				printf("   ");
+			else
+				printf("%X%X ", ((VM[cur] & 0xF0) >> 4), (VM[cur] & 0xF));
 		}
+
+		printf("; ");
+
+		for (int idx = 0; idx < DUMP_ROWS; idx++)
+		{
+			cur = idx + offset;
+			if (cur < s || cur > e)
+				printf(".");
+			else
+				printf("%c", _get_ascii(VM[cur]));
+		}
+
+		printf("\n");
 	}
-	return true;
+	return 0;
 }
 
 bool _validate_input(char *start, char *end)
 {
-	// vaildation number 1 : invalid paramter (not right number)
+	// 1 : Invalid parameter
 	int s, e;
 	if (start && !is_valid_hex(start))
 	{
-		printf("A paramter ('start') has invalid value : '%s'\n", start);
+		printf("Invalid parameter (start) : '%s'\n", start);
 		return false;
 	}
 	if (end && !is_valid_hex(end))
 	{
-		printf("A paramter ('end') has invalid value : '%s'\n", end);
+		printf("Invalid parameter (end) : '%s'\n", end);
 		return false;
 	}
 
-	// vaildation number 2 : invalid number (too big or too small integer)
-	if (start)
+	// 2 : Unreachable address
+	if (start && (s = strtoul(start, NULL, 16)) && (s < 0 || MEMORY_SIZE <= s))
 	{
-		s = strtoul(start, NULL, 16);
-		if (s >= 1048576 || s < 0)
-		{
-			printf("A paramter ('start') havs wrong address : '%s'\n", start);
-			return false;
-		}
+		printf("Unreachable address (start) : '%s'\n", start);
+		return false;
 	}
 
-	// vaildation number 2 : invalid number (too big or too small integer)
-	if (end)
+	if (end && (e = strtoul(end, NULL, 16)) && (e < 0 || MEMORY_SIZE <= e))
 	{
-		e = strtoul(end, NULL, 16);
-		if (e >= 1048576 || e < 0)
-		{
-			printf("A paramter ('end') has wrong address : '%s'\n", end);
-			return false;
-		}
+		printf("Unreachable address (end) : '%s'\n", end);
+		return false;
 	}
 
-	// vaildation number 3 : invalid range
+	// 3 : Wrong range
 	if (s && e && s > e)
 	{
-		printf("An invalid range : %d(start) %d(end) \n", s, e);
+		printf("Wrong range (start ~ end) : '%s ~ %s'\n", start, end);
 		return false;
 	}
 
 	return true;
 }
 
-void adjust_test_case(char *VM)
+void _convert_to_number(char *start, char *end, int *s, int *e)
 {
-	// copy sample screenshot
-	char test_text[100] = "This is sample Program";
-
-	for (int i = 25; i <= 29; i++)
-		VM[i] = 0x20;
-	for (int i = 30; i <= 39; i++)
-		VM[i] = (i - 30) + '0';
-	for (int i = 40; i <= 44; i++)
-		VM[i] = 0x20;
-	VM[45] = '-';
-	VM[46] = '=';
-	VM[47] = '+';
-	VM[48] = '[';
-	VM[49] = ']';
-	VM[50] = '{';
-	VM[51] = '}';
-
-	for (int i = 52; i <= 58; i++)
-		VM[i] = 0x20;
-
-	for (int i = 59; i < 59 + strlen(test_text); i++)
-		strncpy(&VM[i], &(test_text[i - 59]), sizeof(char));
-	for (int i = 59 + strlen(test_text); i < 999; i++)
-		VM[i] = '.';
+	if (start)
+		*s = strtoul(start, NULL, 16);
+	else
+	{
+		*s = global_dump_offset;
+		global_dump_offset += DUMP_COLS * DUMP_ROWS;
+		if (MEMORY_SIZE <= global_dump_offset)
+			global_dump_offset = 0;
+	}
+	if (end)
+		*e = strtoul(end, NULL, 16);
+	else
+		*e = *s + DUMP_COLS * DUMP_ROWS - 1;
 }
 
 char _get_ascii(char value)
@@ -116,96 +133,4 @@ char _get_ascii(char value)
 		return '.';
 	else
 		return value;
-}
-
-// no start/end parameters
-void _show_lines(char *VM, int start_num, int end_num)
-{
-	if (is_debug_mode())
-		printf("[DEBUG] start/end : %d %d \n", start_num, end_num);
-	int offset;
-	int cur_idx;
-	for (int line = (start_num) / 16; line <= (end_num) / 16; line++)
-	{
-		offset = line * 16;
-		if (offset > 0xFFFFF)
-			return;
-
-		printf("%05X ", offset);
-
-		for (int idx = 0; idx < 16; idx++)
-		{
-			cur_idx = idx + offset;
-			if (cur_idx < start_num || cur_idx > end_num)
-				printf("   ");
-			else
-				printf("%X%X ", ((VM[cur_idx] & 0xF0) >> 4), (VM[cur_idx] & 0xF));
-		}
-
-		printf("; ");
-
-		for (int idx = 0; idx < 16; idx++)
-		{
-			cur_idx = idx + offset;
-			if (cur_idx < start_num || cur_idx > end_num)
-				printf(".");
-			else
-				printf("%c", _get_ascii(VM[cur_idx]));
-		}
-
-		printf("\n");
-	}
-}
-
-char *init_vm()
-{
-	char *VM;
-	VM = (char *)malloc(sizeof(char) * MEMORY_SIZE);
-
-	for (int i = 0; i < MEMORY_SIZE; i++)
-	{
-		VM[i] = '\0';
-	}
-
-	if (is_debug_mode())
-		adjust_test_case(VM);
-
-	return VM;
-}
-
-void _get_range(char *start, char *end, int *start_num, int *end_num)
-{
-	if (start)
-		*start_num = strtoul(start, NULL, 16);
-	else
-	{
-		*start_num = dump_global_offset;
-		dump_global_offset += 160;
-		if (dump_global_offset > 0xFFFFF)
-			dump_global_offset = 0;
-	}
-	if (end)
-		*end_num = strtoul(end, NULL, 16);
-	else
-		*end_num = *start_num + 159;
-}
-
-void dump(char *VM)
-{
-	char *start = strtok(NULL, ",");
-	char *end = strtok(NULL, " ");
-	int start_num, end_num;
-
-	bool pass_validation = _validate_input(start, end);
-	if (!pass_validation)
-	{
-		flag_global = false;
-		return;
-	}
-
-	_get_range(start, end, &start_num, &end_num);
-	if (is_debug_mode())
-		printf("[DEBUG] start, end, start_num, end_num, start_num, end_num : \n[DEBUG] %s, %s, %d, %d, %X, %X\n", start, end, start_num, end_num, start_num, end_num);
-
-	_show_lines(VM, start_num, end_num);
 }

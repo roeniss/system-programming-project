@@ -1,18 +1,23 @@
+#include <stdio.h>
 #include <string.h>
 
 #include "debug.h"
 
-bool debug_mode = false;
+static bool debug_mode = false;
 
-void check_debug_mode(char *argv[])
+void check_debug_mode(int argc, char *argv[])
 {
-	if (strcmp(argv[1], "-d") == 0)
+	for (int i = 1; i < argc; i++)
 	{
-		debug_mode = true;
+		if (strcmp(argv[i], "-d") == 0)
+		{
+			printf("[DEBUG] Debug Mode Activated.\n");
+			debug_mode = true;
+		}
 	}
 }
 
-bool is_debug_mode()
+bool is_debug_mode(void)
 {
 	return debug_mode;
 }

@@ -1,7 +1,9 @@
 #ifndef EDIT_H
 #define EDIT_H
 
-// edit specific address's value
-extern void edit(char *);
+//
+// Update the given address's value to the given value.
+//
+int edit(char *address, char *value);
 
 #endif

@@ -1,77 +1,53 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include <ctype.h>
 
-#include "myUtils.h"
+extern char *VM;
 
-// initialize flag
-bool flag_global = false;
-
-char *init_buffer(int max_len)
+void adjust_test_case()
 {
-	char *buffer = (char *)malloc(sizeof(char) * max_len);
-	return buffer;
+	char test_text[100] = "This is sample Program";
+
+	for (int i = 25; i <= 29; i++)
+		VM[i] = 0x20;
+	for (int i = 30; i <= 39; i++)
+		VM[i] = (i - 30) + '0';
+	for (int i = 40; i <= 44; i++)
+		VM[i] = 0x20;
+	VM[45] = '-';
+	VM[46] = '=';
+	VM[47] = '+';
+	VM[48] = '[';
+	VM[49] = ']';
+	VM[50] = '{';
+	VM[51] = '}';
+
+	for (int i = 52; i <= 58; i++)
+		VM[i] = 0x20;
+
+	for (int i = 59; i < 59 + strlen(test_text); i++)
+		strncpy(&VM[i], &(test_text[i - 59]), sizeof(char));
+	for (int i = 59 + strlen(test_text); i < 999; i++)
+		VM[i] = '.';
 }
 
-void ready_command(char *buffer, int max_len)
+bool is_valid_hex(char *value)
 {
-	int c;
-
-	printf("sicsim> ");
-	// strlen(buffer) become read data size. (maxLen: char array size - 1)
-	// (NULL is not counted)
-	// but in this case, (max : char array size -2) reason : check below.
-	fgets(buffer, max_len, stdin);
-
-	while (buffer[strlen(buffer) - 1] != '\n' && (c = getchar()) != '\n')
-		;
-
-	if (strlen(buffer) < 2)
-		return;
-
-	// remove last lineberak --> maxLen = strlen(buffer) - 2
-	buffer[strlen(buffer) - 1] = '\0';
-}
-
-char *lTrim(char *buffer)
-{
-	char *tBuffer = buffer;
-	while (isspace((unsigned char)*tBuffer))
+	if (!value)
+		return false;
+	int length = strlen(value);
+	char target, filter[24] = "-1234567890abcdefABCDEF";
+	char *target_addr;
+	for (int i = 0; i < length; i++)
 	{
-		tBuffer++;
+		target = value[i];
+		if (i == 0)
+			target_addr = strchr(filter, target);
+		else
+			target_addr = strchr(filter + 1, target);
+		if (target_addr == NULL)
+		{
+			return false;
+		}
 	}
-	return tBuffer;
-}
-
-enum COMMAND get_command(char *buffer)
-{
-	if (!(*buffer))
-		return c_unrecognized;
-
-	char *token = strtok(buffer, " ");
-
-	if (strcmp(token, "h") == 0 || strcmp(token, "help") == 0)
-		return c_help;
-	else if (strcmp(token, "d") == 0 || strcmp(token, "dir") == 0)
-		return c_dir;
-	else if (strcmp(token, "q") == 0 || strcmp(token, "quit") == 0)
-		return c_quit;
-	else if (strcmp(token, "hi") == 0 || strcmp(token, "history") == 0)
-		return c_history;
-	else if (strcmp(token, "du") == 0 || strcmp(token, "dump") == 0)
-		return c_dump;
-	else if (strcmp(token, "e") == 0 || strcmp(token, "edit") == 0)
-		return c_edit;
-	else if (strcmp(token, "f") == 0 || strcmp(token, "fill") == 0)
-		return c_fill;
-	else if (strcmp(token, "reset") == 0)
-		return c_reset;
-	else if (strcmp(token, "opcode") == 0)
-		return c_opcode;
-	else if (strcmp(token, "opcodelist") == 0)
-		return c_opcodelist;
-	else
-		return c_unrecognized;
+	return true;
 }

@@ -1,13 +1,19 @@
 #ifndef HISTORY_H
 #define HISTORY_H
 
-// make head node
-extern void init_history();
+//
+// Make head node of command history nodes.
+//
+void init_history(void);
 
-// add one history node
-extern void add_history(char *cmd);
+//
+// Add a history node with the given command.
+//
+void add_history(char *command);
 
-// display all histories from beginning
-extern void show_history();
+//
+// Show all past commands from first one.
+//
+int history(void);
 
 #endif

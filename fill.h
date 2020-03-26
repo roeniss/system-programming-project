@@ -1,7 +1,9 @@
 #ifndef FILL_H
 #define FILL_H
 
-// fill value into addresses from 'start' to 'end'
-void fill(char *);
+//
+// Fill with the given value from 'start' to 'end' addresses.
+//
+int fill(char *start, char *end, char *value);
 
 #endif

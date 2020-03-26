@@ -3,10 +3,15 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
-// check main parameter if exist
-extern void check_debug_mode(char *[]);
+//
+// Check if a parameter named '-d' exists.
+// if true, debug mode will be activated.
+//
+void check_debug_mode(int argc, char *argv[]);
 
-// used to determine whethere print DEBUG message or not
-extern bool is_debug_mode();
+//
+// If debug mode is on, it will return true, otherwise false
+//
+bool is_debug_mode(void);
 
 #endif

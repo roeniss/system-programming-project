@@ -1,7 +1,9 @@
 #ifndef RESET_H
 #define RESET_H
 
-// reset virtual memory
-extern void reset(char *, int);
+//
+// Reset the virtual memory.
+//
+int reset(void);
 
 #endif

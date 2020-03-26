@@ -2,7 +2,8 @@
 
 #include "quit.h"
 
-void quit()
+int quit(void)
 {
 	exit(0);
+	return 0;
 }

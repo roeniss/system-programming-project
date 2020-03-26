@@ -2,7 +2,7 @@
 
 #include "help.h"
 
-void help()
+int help(void)
 {
 	printf("h[elp]\n");
 	printf("d[ir]\n");
@@ -13,5 +13,6 @@ void help()
 	printf("f[ill]\n");
 	printf("reset \n");
 	printf("opcode\n");
-	printf("opcodelist \n");
+	printf("opcodelist\n");
+	return 0;
 }

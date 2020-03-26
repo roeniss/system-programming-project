@@ -6,61 +6,70 @@
 #include "edit.h"
 #include "myUtils.h"
 #include "debug.h"
-#include "dump.h"
 
-#define MEMORY_SIZE 1048576 // [TODO] dump.c 와 중복 선언중
+extern char *VM;
+extern int MEMORY_SIZE;
 
-bool _is_valid_input(char *address, char *value, int *addr, int *val)
+static bool _validate_input(char *address, char *value, int *addr, int *val);
+
+int edit(char *address, char *value)
 {
-	// validation check 1 : check missing parameters
-	if (!address || !value)
+	int addr, val;
+
+	if (is_debug_mode())
+		printf("[DEBUG] address : %s, value : %s\n", address, value);
+
+	if (!_validate_input(address, value, &addr, &val))
+		return 1;
+
+	VM[addr] = val;
+
+	return 0;
+}
+
+bool _validate_input(char *address, char *value, int *addr, int *val)
+{
+
+	// 1 : Insufficient parameter
+	if (!address)
 	{
-		printf("There's some missing parameters : address(%s), value(%s)\n", address, value);
-		flag_global = false;
+		printf("Insufficient parameter (address) : '%s'\n", address);
+		return false;
+	}
+	if (!value)
+	{
+		printf("Insufficient parameter (value) : '%s'\n", value);
 		return false;
 	}
 
-	// validation check 2 : check non-hex style string
-	if (!is_valid_hex(address) || !is_valid_hex(value))
+	// 2 : Invalid parameter
+	if (!is_valid_hex(address))
 	{
-		printf("Some paramters have invalid value: address(%s), value(%s)\n", address, value);
-		flag_global = false;
+		printf("Invalid parameter (address) : '%s'\n", address);
+		return false;
+	}
+	if (!is_valid_hex(value))
+	{
+		printf("Invalid parameter (value) : '%s'\n", value);
 		return false;
 	}
 
 	*addr = strtoul(address, NULL, 16);
 	*val = strtoul(value, NULL, 16);
 
-	// validation check 3 : check wrong address
-	if (*addr < 0 || *addr >= MEMORY_SIZE)
+	// 3 : Unreachable address
+	if (*addr < 0 || MEMORY_SIZE <= *addr)
 	{
-		printf("Invalid address : '%s'\n", address);
-		flag_global = false;
+		printf("Unreachable address (address) : '%s'\n", address);
 		return false;
 	}
 
-	// validation check 4 : check wrong value
-	if (*val < 0 || *val > 0xFF)
+	// 4 : Unwritable address
+	if (*val < 0 || 0xFF < *val)
 	{
-		printf("Invalid value : '%s'\n", value);
-		flag_global = false;
+		printf("Unwritable value (value) : '%s'\n", value);
 		return false;
 	}
 
 	return true;
-}
-
-void edit(char *VM)
-{
-	char *address = strtok(NULL, ",");
-	char *value = strtok(NULL, " ");
-	int addr, val;
-
-	if (is_debug_mode())
-		printf("[DEBUG] address : %s, value : %s\n", address, value);
-
-	if (!_is_valid_input(address, value, &addr, &val))
-		return;
-
-	VM[addr] = val;
 }
