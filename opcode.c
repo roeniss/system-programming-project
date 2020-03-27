@@ -66,7 +66,7 @@ int opcodelist(void)
 					first_block = 0;
 				else
 					printf(" -> ");
-				printf("[ %s, %X ]", block->mnemonic, block->code);
+				printf("[%s,%X]", block->mnemonic, block->code);
 				block = block->next_block;
 			}
 			printf("\n");

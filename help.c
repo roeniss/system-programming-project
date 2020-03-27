@@ -8,11 +8,11 @@ int help(void)
 	printf("d[ir]\n");
 	printf("q[uit]\n");
 	printf("hi[story]\n");
-	printf("du[mp]\n");
-	printf("e[dit]\n");
-	printf("f[ill]\n");
-	printf("reset \n");
-	printf("opcode\n");
+	printf("du[mp] [start, end]\n");
+	printf("e[dit] address, value\n");
+	printf("f[ill] start, end, value\n");
+	printf("reset\n");
+	printf("opcode mnemonic\n");
 	printf("opcodelist\n");
 	return 0;
 }

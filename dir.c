@@ -23,7 +23,7 @@ int dir(void)
 	for (dd = readdir(dr); dd; dd = readdir(dr), ++no)
 	{
 		cols++;
-		printf("%14s", dd->d_name);
+		printf("%s", dd->d_name);
 		stat(dd->d_name, &buf);
 
 		if (S_ISDIR(buf.st_mode))
@@ -31,7 +31,7 @@ int dir(void)
 		else if (buf.st_mode & S_IXUSR || buf.st_mode & S_IXGRP || buf.st_mode & S_IXOTH)
 			printf("*\t");
 		else
-			printf("\t");
+			printf(" \t");
 
 		if (cols == 3)
 		{
