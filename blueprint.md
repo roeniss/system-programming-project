@@ -6,7 +6,9 @@
 
 ### 전체적인 그림
 
-쉘진입 --> (입력 --> 명령어 실행) 반복
+- 쉘진입 --> (입력 --> 명령어 실행) 반복
+- 각각의 명령어는 독립적인 h, c 파일로 구성되어있다.
+
 
 ### 구현해야 하는 것들
 
@@ -40,3 +42,18 @@
 - [x] opcodelist 구현 --> "opcode Hash Table 의 내용을 아래와 같은 형식으로 출력합니다"
 
 - [x] 리팩토링
+
+### 요구사항
+
+- `sp학번_proj1` 디렉토리 내에 (1) 소스파일, (2) Makefile, (3) document.docx, (4) README, (5) opcode.txt 파일 추가
+- 디렉토리를 tar로 압축해 한 파일로 만들어 제출 (no `-z` option)
+- 바이너리 파일 제출 금지 (`make clean`)
+
+- [x] source files
+- [x] Makefile
+- [ ] document.docx
+- [x] README
+- [x] opcode.txt
+- [ ] `cd sp20140424_proj1 && make clean && tar cvf sp20140424_proj1.tar *` 
+
+- [ ] 최종제출
