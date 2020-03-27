@@ -101,7 +101,7 @@ bool _validate_input(char *start, char *end)
 	}
 
 	// 3 : Wrong range
-	if (s && e && s > e)
+	if (start && end && s > e)
 	{
 		printf("Wrong range (start ~ end) : '%s ~ %s'\n", start, end);
 		return false;
