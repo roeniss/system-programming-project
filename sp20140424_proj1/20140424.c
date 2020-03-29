@@ -53,7 +53,9 @@ int MEMORY_SIZE = 1048576,
 	DUMP_COLS = 16,
 	DUMP_ROWS = 10;
 char *VM;
-Buffer *buffer; // buffer is not actual extern, but here for easy-access.
+
+// buffer is not actual extern, but here for easy-access in this file.
+Buffer *buffer; 
 
 static void _init_vm(char **VM);
 static void _init_buffer();
