@@ -124,7 +124,7 @@ void _receive_command()
 	int tmpChar;
 	printf("sicsim> ");
 
-	// strlen(input) become read data size :  maxLen = strlen(input) - 1
+	// strlen(input) read data size :  maxLen = strlen(input) - 1
 	// because NULL is not counted.
 	// But in this case :  maxLen = strlen(input) - 2
 	// because it removes last linebreak.
