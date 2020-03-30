@@ -55,7 +55,7 @@ int MEMORY_SIZE = 1048576,
 char *VM;
 
 // buffer is not actual extern, but here for easy-access in this file.
-Buffer *buffer; 
+Buffer *buffer;
 
 static void _init_vm(char **VM);
 static void _init_buffer();
@@ -124,19 +124,24 @@ void _receive_command()
 	int tmpChar;
 	printf("sicsim> ");
 
-	// strlen(input) become read data size :  maxLen = strlen(input) - 1
-	// because NULL is not counted.
-	// But in this case :  maxLen = strlen(input) - 2
-	// because it removes last linebreak.
-	fgets(buffer->input, MAX_INPUT_BUFFER_SIZE, stdin);
+	// fgets in C++ reference said, "Reads characters from stream and
+	// stores them as a C string into str until
+	// (1) {num-1} characters have been read or
+	// (2) either a newline or (3) the end-of-file is reached,
+	// whichever happens first."
+	// So I insert "MAX_INPUT_BUFFER_SIZE + 1" on 2nd parameter
+	// to get "MAX_INPUT_BUFFER_SIZE" at most.
+	fgets(buffer->input, MAX_INPUT_BUFFER_SIZE + 1, stdin);
 
+	int a = strlen(buffer->input);
+
+	// get char one by one until meeting LF ('\n')
 	while (buffer->input[strlen(buffer->input) - 1] != '\n' && (tmpChar = getchar()) != '\n')
 		;
 
-	if (strlen(buffer->input) < 2)
-		return;
-
-	buffer->input[strlen(buffer->input) - 1] = '\0';
+	// remove last character if it is '\n' because this program don't need it
+	if (buffer->input[strlen(buffer->input) - 1] == '\n')
+		buffer->input[strlen(buffer->input) - 1] = '\0';
 }
 
 void _parse_command()
