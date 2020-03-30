@@ -54,6 +54,6 @@
 - [ ] document.docx
 - [x] README
 - [x] opcode.txt
-- [ ] `cd sp20140424_proj1 && make clean && tar cvf sp20140424_proj1.tar *` 
+- [x] 압축파일 생성하는 스크립트 만들기 
 
 - [ ] 최종제출
