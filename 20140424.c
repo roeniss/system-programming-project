@@ -92,9 +92,10 @@ int main(int argc, char *argv[])
 //
 void _init_vm(char **VM)
 {
+	int i;
 	*VM = (char *)malloc(sizeof(char) * MEMORY_SIZE);
 
-	for (int i = 0; i < MEMORY_SIZE; i++)
+	for (i = 0; i < MEMORY_SIZE; i++)
 		(*VM)[i] = '\0';
 
 	if (is_debug_mode())
@@ -106,11 +107,12 @@ void _init_vm(char **VM)
 //
 void _init_buffer()
 {
+	int i;
 	buffer = (Buffer *)malloc(sizeof(Buffer));
 	buffer->input = (char *)malloc(sizeof(char) * MAX_INPUT_BUFFER_SIZE);
 	buffer->input_copy = (char *)malloc(sizeof(char) * MAX_INPUT_BUFFER_SIZE);
 	buffer->parameter = (char **)malloc(sizeof(char *) * MAX_PARAMETERS_COUNT);
-	for (int i = 0; i < MAX_PARAMETERS_COUNT; i++)
+	for (i = 0; i < MAX_PARAMETERS_COUNT; i++)
 		buffer->parameter[i] = (char *)malloc(sizeof(char) * MAX_PARAMETER_SIZE);
 }
 
@@ -146,6 +148,7 @@ void _receive_command()
 
 void _parse_command()
 {
+	int i;
 	// 1. Get input
 	strcpy(buffer->input, _left_trim(buffer->input));
 	// store left-trimmed full input for adding to history list
@@ -155,7 +158,7 @@ void _parse_command()
 	buffer->command = _get_command(strtok(buffer->input, " \t"));
 
 	// 3. Get parameters
-	for (int i = 0; i < MAX_PARAMETERS_COUNT; i++)
+	for (i = 0; i < MAX_PARAMETERS_COUNT; i++)
 		buffer->parameter[i] = strtok(NULL, ", \t");
 
 	if (is_debug_mode())

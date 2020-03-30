@@ -38,7 +38,8 @@ void add_history(char *command)
 int history()
 {
 	int idx = 1;
-	for (History_Node cur_node = history_head->next_node; cur_node; cur_node = cur_node->next_node)
+	History_Node cur_node;
+	for (cur_node = history_head->next_node; cur_node; cur_node = cur_node->next_node)
 		printf("%-4d %s\n", idx++, cur_node->command);
 	return 0;
 }

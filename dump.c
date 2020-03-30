@@ -28,6 +28,7 @@ static char _get_ascii(char value);
 //
 int dump(char *start, char *end)
 {
+	int line, idx;
 	int s, e;
 	int offset, cur;
 
@@ -39,7 +40,7 @@ int dump(char *start, char *end)
 	if (is_debug_mode())
 		printf("[DEBUG] start, end, start_num, end_num, start_num_hex, end_num_hex : \n[DEBUG] %s, %s, %d, %d, %X, %X\n", start, end, s, e, s, e);
 
-	for (int line = s / DUMP_COLS; line <= e / DUMP_COLS; line++)
+	for (line = s / DUMP_COLS; line <= e / DUMP_COLS; line++)
 	{
 		offset = line * DUMP_COLS;
 		if (offset >= MEMORY_SIZE)
@@ -47,7 +48,7 @@ int dump(char *start, char *end)
 
 		printf("%05X ", offset);
 
-		for (int idx = 0; idx < DUMP_COLS; idx++)
+		for (idx = 0; idx < DUMP_COLS; idx++)
 		{
 			cur = idx + offset;
 			if (cur < s || cur > e)
@@ -58,7 +59,7 @@ int dump(char *start, char *end)
 
 		printf("; ");
 
-		for (int idx = 0; idx < DUMP_COLS; idx++)
+		for (idx = 0; idx < DUMP_COLS; idx++)
 		{
 			cur = idx + offset;
 			if (cur < s || cur > e)

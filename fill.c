@@ -14,6 +14,7 @@ static bool _validate_input(char *start, char *end, char *value);
 
 int fill(char *start, char *end, char *value)
 {
+	int i;
 	int s, e, val;
 
 	if (is_debug_mode())
@@ -26,7 +27,7 @@ int fill(char *start, char *end, char *value)
 	e = strtoul(end, NULL, 16);
 	val = strtoul(value, NULL, 16);
 
-	for (int i = s; i <= e; i++)
+	for (i = s; i <= e; i++)
 		VM[i] = val;
 
 	return 0;

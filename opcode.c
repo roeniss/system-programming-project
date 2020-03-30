@@ -48,10 +48,11 @@ int opcode(char *mnemonic)
 
 int opcodelist(void)
 {
+	int line;
 	hash_block block;
 	int first_block;
 
-	for (int line = 0; line < HASH_SIZE; line++)
+	for (line = 0; line < HASH_SIZE; line++)
 	{
 		first_block = 1;
 		printf("%d : ", line);
@@ -98,8 +99,9 @@ bool _validate_input(char *mnemonic, int *opcode)
 
 int _get_hash(char *mnemonic)
 {
+	int i;
 	int mul = 1, hash = 0;
-	for (int i = 0; mnemonic[i] != 0; i++)
+	for (i = 0; mnemonic[i] != 0; i++)
 	{
 		hash = ((mnemonic[i] * mul) + hash) % HASH_SIZE;
 		mul *= 17;
