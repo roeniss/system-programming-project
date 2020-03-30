@@ -135,8 +135,6 @@ void _receive_command()
 	// to get "MAX_INPUT_BUFFER_SIZE" at most.
 	fgets(buffer->input, MAX_INPUT_BUFFER_SIZE + 1, stdin);
 
-	int a = strlen(buffer->input);
-
 	// get char one by one until meeting LF ('\n')
 	while (buffer->input[strlen(buffer->input) - 1] != '\n' && (tmpChar = getchar()) != '\n')
 		;
