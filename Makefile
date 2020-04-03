@@ -24,8 +24,8 @@ TARGET=20140424.out
 $(TARGET): $(OBJS)
 	gcc -o $@ $(OBJS)
 
-main.o: main.c
-	$(CC) $(CFLAGS) -c -o $@ main.c
+20140424: 20140424.c
+	$(CC) $(CFLAGS) -c -o $@ 20140424.c
 
 myUtils.o: myUtils.c
 help.o: help.c
