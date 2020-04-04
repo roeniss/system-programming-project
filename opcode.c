@@ -11,7 +11,7 @@ typedef struct _hash_block *hash_block;
 struct _hash_block
 {
 	int code;
-	char mnemonic[5];
+	char mnemonic[10];
 	// char ic[4]; // instruction count
 	hash_block next_block;
 };
