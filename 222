@@ -1,7 +1,0 @@
-#!/bin/bash
-
-# debug mode
-# make clean && make && ./20140424.out -d
-
-# real mode
-make clean && make && ./20140424.out 
