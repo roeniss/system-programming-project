@@ -35,6 +35,9 @@ enum Command {
     c_reset,
     c_opcode,
     c_opcodelist,
+    c_assemble,
+    c_type,
+    c_symbol,
     c_unrecognized
 };
 typedef enum Command Command;
@@ -199,6 +202,15 @@ void _execute_command(int *command_flag) {
         case c_opcodelist:
             *command_flag = opcodelist();
             break;
+        case c_assemble:
+//            *command_flag = assemble();
+            break;
+        case c_type:
+            *command_flag = type(buffer->parameter[0]);
+            break;
+        case c_symbol:
+//            *command_flag = symbol();
+            break;
         case c_unrecognized:
             *command_flag = 1;
             break;
@@ -231,6 +243,12 @@ Command _get_command(char *token) {
         return c_opcode;
     else if (strcmp(token, "opcodelist") == 0)
         return c_opcodelist;
+    else if (strcmp(token, "assemble") == 0)
+        return c_assemble;
+    else if (strcmp(token, "type") == 0)
+        return c_type;
+    else if (strcmp(token, "symbol") == 0)
+        return c_symbol;
     else
         return c_unrecognized;
 }
