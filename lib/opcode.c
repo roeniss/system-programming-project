@@ -9,7 +9,7 @@ typedef struct _hash_block *hash_block;
 struct _hash_block {
     int code;
     char mnemonic[20];
-    // char ic[4]; // instruction count
+    char avail_format[10];
     hash_block next_block;
 };
 
@@ -26,11 +26,11 @@ static int _find_opcode(char *mnemonic);
 void init_opcode(void) {
     FILE *fp;
     int code;
-    char mnemonic[5], ic[5];
+    char mnemonic[5], avail_format[10];
     fp = fopen("./lib/opcode.txt", "r");
     while (!feof(fp)) {
-        fscanf(fp, "%x %s %s", &code, mnemonic, ic);
-        _add_hash(code, mnemonic, ic);
+        fscanf(fp, "%x %s %s", &code, mnemonic, avail_format);
+        _add_hash(code, mnemonic, avail_format);
     }
 }
 
@@ -100,10 +100,11 @@ int _get_hash(const char *mnemonic) {
     return hash % HASH_SIZE;
 }
 
-void _add_hash(int code, char *mnemonic, char *ic) {
+void _add_hash(int code, char *mnemonic, char *avail_format) {
     hash_block new_block, target_block;
     new_block = (hash_block) malloc(sizeof(struct _hash_block));
     new_block->code = code;
+    strcpy(new_block->avail_format, avail_format);
     strcpy(new_block->mnemonic, mnemonic);
     new_block->next_block = NULL;
 
