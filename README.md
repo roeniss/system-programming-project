@@ -65,7 +65,7 @@
 #### 구현해야 하는 것들
 
 - [x] help
-- [ ] type filename
+- [x] type filename
 - [ ] assemble filename : "소스파일에 에러 존재 시 라인/에러내용 명시", ".lst, .obj", "라인 번호는 5 배수 단위로 지정하여 출력", "각 문자열은 30자 이내", "label은 영문/숫자가 input. 맨 앞은 숫자 불가"
 - [ ] symbol
 

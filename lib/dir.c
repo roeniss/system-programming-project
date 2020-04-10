@@ -33,3 +33,19 @@ int dir(void) {
     closedir(dr);
     return 0;
 }
+
+int type(char *filename) {
+    FILE *fp = fopen(filename, "r");
+    int bufferLength = 255;
+    char buffer[bufferLength];
+    if (fp == NULL) {
+        printf("There is no such file: '%s'\n", filename);
+        return 1;
+    }
+
+    while (fgets(buffer, bufferLength, fp))
+        printf("%s", buffer);
+
+    fclose(fp);
+    return 0;
+}
