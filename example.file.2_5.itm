@@ -1,0 +1,47 @@
+PC         OPCODE     OPERAND    
+0          START      0          
+3          STL        RETADR     
+6          LDB        #LENGTH    
+6          BASE       LENGTH     
+10         +JSUB      RDREC      
+13         LDA        LENGTH     
+16         COMP       #0         
+19         JEQ        ENDFIL     
+23         +JSUB      WRREC      
+26         J          CLOOP      
+29         LDA        EOF        
+32         STA        BUFFER     
+35         LDA        #3         
+38         STA        LENGTH     
+42         +JSUB      WRREC      
+45         J          @RETADR    
+48         BYTE       C'EOF'     
+51         RESW       1          
+54         RESW       1          
+4150       RESB       4096       
+4152       CLEAR      X          
+4154       CLEAR      A          
+4156       CLEAR      S          
+4160       +LDT       #4096      
+4163       TD         INPUT      
+4166       JEQ        RLOOP      
+4169       RD         INPUT      
+4171       COMPR      A, S       
+4174       JEQ        EXIT       
+4177       STCH       BUFFER, X  
+4179       TIXR       T          
+4182       JLT        RLOOP      
+4185       STX        LENGTH     
+4188       RSUB                  
+4189       BYTE       X'F1'      
+4191       CLEAR      X          
+4194       LDT        LENGTH     
+4197       TD         OUTPUT     
+4200       JEQ        WLOOP      
+4203       LDCH       BUFFER, X  
+4206       WD         OUTPUT     
+4208       TIXR       T          
+4211       JLT        WLOOP      
+4214       RSUB                  
+4215       BYTE       X'05'      
+4215       END        FIRST      

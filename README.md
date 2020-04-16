@@ -68,6 +68,20 @@
 2. 변수명이 중복으로 사용되었을 경우
 3. 정의되지 않은 instruction이 사용되었을 경우
 
+\* Supported Assembly Directives (as-is format)
+```text
+name    START   abs_expr
+        END     (1st_exec)
+symbol  BYTE    Hex_or_Char_data    # Occupy many bites as needed
+symbol  WORD    integer             # Reserves only 1 word
+symbol  RESB    integer
+symbol  RESW    integer
+        BASE    symbol              # "Now B reg has the address of the given symbol, So use it for Specifying Target Address"
+        NOBASE                      # "Now assembler must not use B reg for specifying TA"
+```
+
++) BASE Directives는 Assembler가 (1) B 레지스터를 "사용할 수 있는지", 그리고 만약 그렇다면 (2) 그 값은 "무엇인지"를 지정한다. 그런데 지정하는 게 실제 할당하는 게 아니라.. 말하자면 "어셈블러의 별도 테이블에 별도로 기록만" 해두는 것이기 때문에, 나중에 '정말로 머신코드가 수행될 때'에는 B 레지스터에 아무것도 기록되어 있지 않다. B 레지스터가 제 구실을 할 수 있게 하려면, `LDB #symbol` 라인이 한 줄 더 필요하다. 
+
 #### 구현해야 하는 것들
 
 - [x] help
