@@ -3,23 +3,11 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "lib/help.h"
-#include "lib/dir.h"
-#include "lib/quit.h"
+#include "lib/others.h"
 #include "lib/history.h"
-#include "lib/dump.h"
-#include "lib/reset.h"
-#include "lib/debug.h"
-#include "lib/edit.h"
-#include "lib/fill.h"
-#include "lib/opcode.h"
-#include "lib/myUtils.h"
-#include "lib/debug.h"
+#include "lib/optab.h"
+#include "lib/vm.h"
 #include "lib/assemble.h"
-
-extern int MEMORY_SIZE;
-extern int DUMP_COLS;
-extern int DUMP_ROWS;
 
 #define MAX_INPUT_BUFFER_SIZE 100
 #define MAX_PARAMETERS_COUNT 3
@@ -52,16 +40,12 @@ struct Buffer {
 };
 typedef struct Buffer Buffer;
 
-// extern/global variables
-int MEMORY_SIZE = 1048576,
-    DUMP_COLS = 16,
-    DUMP_ROWS = 10;
-char *VM;
+
+char *_VM;
 
 // buffer is not actual extern, but here for easy-access in this file.
 Buffer *buffer;
 
-static void _init_vm(char **VM);
 static void _init_buffer(void);
 static void _receive_command(void);
 static void _parse_command(void);
@@ -72,40 +56,25 @@ static char *_left_trim(char *input);
 int main(int argc, char *argv[]) {
   int command_flag = 0;
 
-  if (argc > 1)
-    check_debug_mode(argc, argv);
-
-  _init_vm(&VM);
   _init_buffer();
   init_history();
-  init_opcode();
+  init_opcode("lib/opcode.txt");
 
   // TEST
-  char filename[] = "2_5.asm";
-  assemble(filename);
-  show_symbol();
+  //char filename[] = "2_5.asm";
+  //assemble(filename);
+  //show_symbol();
+  //return 0;
   // ~TEST
 
-  while (true) {
+  while (1) {
     command_flag = 0; // '0' means 'no error'
     _receive_command();
     _parse_command();
     _execute_command(&command_flag);
   }
-}
 
-//
-// Allocate virtual memory.
-//
-void _init_vm(char **VM) {
-  int i;
-  *VM = (char *) malloc(sizeof(char) * MEMORY_SIZE);
-
-  for (i = 0; i < MEMORY_SIZE; i++)
-    (*VM)[i] = '\0';
-
-  if (is_debug_mode())
-    adjust_test_case();
+  return 0;
 }
 
 //
@@ -161,15 +130,6 @@ void _parse_command(void) {
   for (i = 0; i < MAX_PARAMETERS_COUNT; i++)
     buffer->parameter[i] = strtok(NULL, ", \t");
 
-  if (is_debug_mode())
-    printf(
-        "[DEBUG] \ninput : %s, \ncommand : %s, \ncommand_num : %d, \nparameter 1 : %s, \nparameter 2 : %s, \nparameter 3 : %s.\n",
-        buffer->input_copy,
-        buffer->input_ltrim,
-        buffer->command,
-        buffer->parameter[0],
-        buffer->parameter[1],
-        buffer->parameter[2]);
 }
 
 void _execute_command(int *command_flag) {
