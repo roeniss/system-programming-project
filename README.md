@@ -55,6 +55,7 @@
 
 - [x] 최종제출
 
+---
 
 ## 프로젝트2 설계도
 
@@ -64,9 +65,9 @@
 
 \*발생할 수 있는 에러들
 
-1. 정의되지 않은 변수명이 사용되었을 경우
-2. 변수명이 중복으로 사용되었을 경우
-3. 정의되지 않은 instruction이 사용되었을 경우
+1. 정의되지 않은 변수명이 사용되었을 경우 ✅
+2. 변수명이 중복으로 사용되었을 경우 ✅
+3. 정의되지 않은 instruction이 사용되었을 경우 ✅
 
 \* Supported Assembly Directives (as-is format)
 ```text
@@ -86,8 +87,8 @@ symbol  RESW    integer
 
 - [x] help
 - [x] type filename
-- [ ] assemble filename : "소스파일에 에러 존재 시 라인/에러내용 명시", ".lst, .obj", "라인 번호는 5 배수 단위로 지정하여 출력", "각 문자열은 30자 이내", "label은 영문/숫자가 input. 맨 앞은 숫자 불가"
-- [ ] symbol
+- [x] assemble filename : "소스파일에 에러 존재 시 라인/에러내용 명시", ".lst, .obj", "라인 번호는 5 배수 단위로 지정하여 출력", "각 문자열은 30자 이내", "label은 영문/숫자, 맨 앞은 숫자 불가"
+- [x] symbol
 
 #### 제출 요구사항
 

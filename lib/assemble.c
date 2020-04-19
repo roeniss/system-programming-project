@@ -241,8 +241,8 @@ int _pass1() {
           return 1;
         }
       } else {
-        // Error Handling : UNKNOWN_OPCODE_OR_DIRECTIVE
-        printf("Line %d : Unknown opcode or directive\n", line_no);
+        // Error Handling : UNKNOWN_INSTRUCTION
+        printf("Line %d : Unknown instruction (opcode or directive)\n", line_no);
         return 1;
       }
 
