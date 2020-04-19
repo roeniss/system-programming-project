@@ -47,6 +47,12 @@ void _split_operands();
 
 int assemble(char *file) {
   char original_file[255];
+  if(!file){
+    // Error Handling : NO_FILE_NAME
+    printf("There is no file name\n");
+    goto ERROR_HANDLING;
+  }
+
   strcpy(original_file, file);
 
   fp_asm = fopen(file, "r");
