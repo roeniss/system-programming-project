@@ -58,7 +58,7 @@ int assemble(char *file) {
   _open_file_with_ext(&fp_itm, file, "itm", "w");
   _init_symtab();
 
-  int error = _pass1(file);
+  int error = _pass1();
   if (error) goto ERROR_HANDLING;
 
   fclose(fp_itm);
@@ -68,7 +68,7 @@ int assemble(char *file) {
   _open_file_with_ext(&fp_obj, file, "obj", "w");
   _open_file_with_ext(&fp_lst, file, "lst", "w");
 
-  error = _pass2(file);
+  error = _pass2();
   if (error) goto ERROR_HANDLING;
 
   // close all files

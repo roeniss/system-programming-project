@@ -39,7 +39,7 @@ int type(char *filename) {
   char buffer[bufferLength];
 
   if (fp == NULL) {
-    printf("There is no such file: '%s'\n", filename);
+    printf("There is no such file\n");
     return 1;
   }
 
