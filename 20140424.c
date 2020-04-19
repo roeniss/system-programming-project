@@ -54,7 +54,7 @@ static void _execute_command(int *command_flag);
 static Command _get_command(char *token);
 static char *_left_trim(char *input);
 
-int main(int argc, char *argv[]) {
+int main() {
   int command_flag = 0;
 
   _init_buffer();
