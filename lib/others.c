@@ -45,6 +45,7 @@ int type(char *filename) {
   while (fgets(buffer, bufferLength, fp))
     printf("%s", buffer);
 
+  printf("\n");
   fclose(fp);
   return 0;
 }
