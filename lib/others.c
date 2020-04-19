@@ -40,8 +40,6 @@ int type(char *filename) {
 
   if (fp == NULL) {
     printf("There is no such file: '%s'\n", filename);
-
-    fclose(fp);
     return 1;
   }
 

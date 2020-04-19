@@ -46,6 +46,9 @@ static void _find_r1r2();
 void _split_operands();
 
 int assemble(char *file) {
+  char original_file[255];
+  strcpy(original_file, file);
+
   fp_asm = fopen(file, "r");
   if (!fp_asm) {
     // Error Handling : FILE_NOT_FOUND
@@ -72,6 +75,8 @@ int assemble(char *file) {
   if (fp_itm) fclose(fp_itm);
   if (fp_obj) fclose(fp_obj);
   if (fp_lst) fclose(fp_lst);
+
+  printf("\x1b[32m" "Successfully " "\x1b[0m" "assemble %s.\n", original_file);
 
   return 0;
 

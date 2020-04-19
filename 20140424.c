@@ -61,12 +61,6 @@ int main(int argc, char *argv[]) {
   init_history();
   init_opcode("lib/opcode.txt");
 
-  // TEST
-  char filename[] = "2_5.asm";
-  assemble(filename);
-  return 0;
-  // ~TEST
-
   while (1) {
     command_flag = 0; // '0' means 'no error'
     _receive_command();
