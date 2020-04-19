@@ -2,11 +2,7 @@
 
 ## 프로젝트1 설계도
 
-### 계획
-
-최종작성일 2020.03.19
-
-#### 전체적인 그림
+#### 참고사항
 
 - 쉘진입 --> (입력 --> 명령어 실행) 반복
 - 각각의 명령어는 독립적인 h, c 파일로 구성되어있다.
@@ -44,7 +40,7 @@
 
 - [x] 리팩토링
 
-#### 요구사항
+#### 제출 요구사항
 
 - `sp학번_proj1` 디렉토리 내에 (1) 소스파일, (2) Makefile, (3) document.docx, (4) README, (5) opcode.txt 파일 추가
 - 디렉토리를 tar로 압축해 한 파일로 만들어 제출 (no `-z` option)
@@ -58,3 +54,54 @@
 - [x] 압축파일 생성하는 스크립트 만들기
 
 - [x] 최종제출
+
+---
+
+## 프로젝트2 설계도
+
+#### 참고사항
+
+"본 프로젝트는 완벽한 어셈블러를 구현하는 것이 아닙니다. 기본 테스트 케이스(2_5.asm)과 기본 테스트 케이스를 조금 변형한 테스트 케이스를 사용할 것이기 때문에 예외처리가 아닌 기능 구현에 중점을 두시기 바랍니다."
+
+\*발생할 수 있는 에러들
+
+1. 정의되지 않은 변수명이 사용되었을 경우 ✅
+2. 변수명이 중복으로 사용되었을 경우 ✅
+3. 정의되지 않은 instruction이 사용되었을 경우 ✅
+
+\* Supported Assembly Directives (as-is format)
+```text
+name    START   abs_expr
+        END     (1st_exec)
+symbol  BYTE    Hex_or_Char_data    # Occupy many bites as needed
+symbol  WORD    integer             # Reserves only 1 word
+symbol  RESB    integer
+symbol  RESW    integer
+        BASE    symbol              # "Now B reg has the address of the given symbol, So use it for Specifying Target Address"
+        NOBASE                      # "Now assembler must not use B reg for specifying TA"
+```
+
++) BASE Directives는 Assembler가 (1) B 레지스터를 "사용할 수 있는지", 그리고 만약 그렇다면 (2) 그 값은 "무엇인지"를 지정한다. 그런데 지정하는 게 실제 할당하는 게 아니라.. 말하자면 "어셈블러의 별도 테이블에 별도로 기록만" 해두는 것이기 때문에, 나중에 '정말로 머신코드가 수행될 때'에는 B 레지스터에 아무것도 기록되어 있지 않다. B 레지스터가 제 구실을 할 수 있게 하려면, `LDB #symbol` 라인이 한 줄 더 필요하다. 
+
+#### 구현해야 하는 것들
+
+- [x] help
+- [x] type filename
+- [x] assemble filename : "소스파일에 에러 존재 시 라인/에러내용 명시", ".lst, .obj", "라인 번호는 5 배수 단위로 지정하여 출력", "각 문자열은 30자 이내", "label은 영문/숫자, 맨 앞은 숫자 불가"
+- [x] symbol
+
+#### 제출 요구사항
+
+- [ ] source files (*.c, *.h)
+- [ ] Makefile (make clean 구현 필수)
+- [ ] document.docx : "이번에는 XE 소스 assemble이 주된 기능이니 만큼 이에 대한 프로그램 흐름이나 알고리즘 설명 (어떻게 구현하였는지)을 꼭 넣어주시기 바랍니다"
+- [ ] README
+- [ ] opcode.txt, 2_5.asm
+
+이상의 파일들이 필요하고,
+
+- [ ] 압축 파일 조건1 : "sp학번_proj2 이름의 디렉터리를 만들고, 이 디렉터리에 5에서 언급한 제출물을 넣어서 디렉터리를 tar로 압축하여 한 파일로 만든 후 과제란에 과제를 제출"
+- [ ] 압축 파일 조건2 : "tar 파일로 압축할 때 지난 프로젝트와 동일하게 -z 옵션을 사용하지 않습니다"
+- [ ] 압축 파일 조건3 : 바이너리 등 요구되지 않은 파일 반드시 제외
+
+

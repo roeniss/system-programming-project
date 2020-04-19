@@ -4,6 +4,7 @@
 .vscode/
 /tmp
 .DS_Store
+/.idea
 
 /CMakeCache.txt
 /cmake_install.cmake
