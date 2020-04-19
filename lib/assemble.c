@@ -62,7 +62,9 @@ int assemble(char *file) {
   if (error) goto ERROR_HANDLING;
 
   fclose(fp_itm);
+  fp_itm = NULL;
   fclose(fp_asm);
+  fp_asm = NULL;
 
   _open_file_with_ext(&fp_itm, file, "itm", "r");
   _open_file_with_ext(&fp_obj, file, "obj", "w");
@@ -72,9 +74,9 @@ int assemble(char *file) {
   if (error) goto ERROR_HANDLING;
 
   // close all files
-  if (fp_itm) fclose(fp_itm);
-  if (fp_obj) fclose(fp_obj);
-  if (fp_lst) fclose(fp_lst);
+  if (fp_itm) {fclose(fp_itm);fp_itm = NULL;}
+  if (fp_obj) {fclose(fp_obj);fp_obj = NULL;}
+  if (fp_lst){ fclose(fp_lst);fp_lst = NULL;}
 
   printf("\x1b[32m" "Successfully " "\x1b[0m" "assemble %s.\n", original_file);
 
@@ -83,10 +85,10 @@ int assemble(char *file) {
   ERROR_HANDLING:
 
   // close all files
-  if (fp_asm) fclose(fp_asm);
-  if (fp_itm) fclose(fp_itm);
-  if (fp_obj) fclose(fp_obj);
-  if (fp_lst) fclose(fp_lst);
+  if (fp_asm) {fclose(fp_asm);fp_asm = NULL;}
+  if (fp_itm) {fclose(fp_itm);fp_itm = NULL;}
+  if (fp_obj) {fclose(fp_obj);fp_obj = NULL;}
+  if (fp_lst) {fclose(fp_lst);fp_lst = NULL;}
 
   // remove every generated files
   _delete_file_with_ext(file, "itm");

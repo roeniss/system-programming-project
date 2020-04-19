@@ -9,7 +9,7 @@
 
 static optab_node optab_hash_table[HASH_SIZE];
 static bool _check_and_assign(char *mnemonic, optab_node *target_node); // if no problem, assign node
-static void _add_node(int code, char *mnemonic, char *ic);
+static void _add_node(int code, char *mnemonic, char *avail_format);
 static int _get_hash(char *mnemonic);
 
 void init_opcode(char *filename) {
