@@ -320,7 +320,7 @@ int _pass2() {
 
   symbol[6] = '\0';
   fprintf(fp_obj, "H%-6s%06X%06X\n", symbol, (int) strtol(operand, NULL, 16), program_length);
-  fprintf(fp_lst, "%-4s     %-4s       %-22s    %s\n", "Line", "Loc", "Source Statement", "Object code");
+  // fprintf(fp_lst, "%-4s     %-4s       %-22s    %s\n", "Line", "Loc", "Source Statement", "Object code");
   fprintf(fp_lst, "%4d     %04X     %-8s %-8s %-8s  \n", line_no, loc, symbol, order, operand);
 
   textRecordStart = PC = loc;

@@ -53,7 +53,7 @@ symtab_node find_symbol(char *symbol) {
 
 int show_symbol(void) {
   for (symtab_node cur = _symtab_head; cur; cur = cur->next_node) {
-    printf("         %-10s %04X\n", cur->symbol, cur->address);
+    printf("        %-7s %04X\n", cur->symbol, cur->address);
   }
   return 0;
 }
