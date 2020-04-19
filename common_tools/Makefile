@@ -1,15 +1,13 @@
-CC=gcc
-CFLAGS=-Wall
-OBJS=lib/20140424.o lib/myUtils.o lib/help.o lib/dir.o lib/quit.o lib/history.o lib/dump.o lib/opcode.o lib/reset.o lib/debug.o lib/edit.o lib/fill.o
+CC = gcc
+CFLAGS = -W -Wall
 TARGET=20140424.out
+OBJS = 20140424.o lib/history.o lib/assemble.o lib/optab.o lib/others.o lib/vm.o lib/symtab.o
+
+all : $(TARGET)
 
 $(TARGET): $(OBJS)
-	gcc -o $@ $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $^
 
-lib/20140424.o: 20140424.c
-	$(CC) $(CFLAGS) -c -o $@ 20140424.c
-
-## macro ##
 clean:
 	rm -f ./lib/*.o
 	rm -f $(TARGET)
