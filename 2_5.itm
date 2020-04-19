@@ -1,53 +1,52 @@
-LINE       LOC        SYMBOL     OPCODE     OPERAND    
-0          0          COPY       START      0          
-5          0          FIRST      STL        RETADR     
-10         3          ~          LDB        #LENGTH    
-15         6          ~          BASE       LENGTH     
-20         6          CLOOP      +JSUB      RDREC      
-25         A          ~          LDA        LENGTH     
-30         D          ~          COMP       #0         
-35         10         ~          JEQ        ENDFIL     
-40         13         ~          +JSUB      WRREC      
-45         17         ~          J          CLOOP      
-50         1A         ENDFIL     LDA        EOF        
-55         1D         ~          STA        BUFFER     
-60         20         ~          LDA        #3         
-65         23         ~          STA        LENGTH     
-70         26         ~          +JSUB      WRREC      
-75         2A         ~          J          @RETADR    
-80         2D         EOF        BYTE       C'EOF'     
-85         30         RETADR     RESW       1          
-90         33         LENGTH     RESW       1          
-95         36         BUFFER     RESB       4096       
-100        1036       .
-105        1036       .      SUBROUTINE TO READ RECORD INTO BUFFER
-110        1036       .
-115        1036       RDREC      CLEAR      X          
-120        1038       ~          CLEAR      A          
-125        103A       ~          CLEAR      S          
-130        103C       ~          +LDT       #4096      
-135        1040       RLOOP      TD         INPUT      
-140        1043       ~          JEQ        RLOOP      
-145        1046       ~          RD         INPUT      
-150        1049       ~          COMPR      A, S       
-155        104B       ~          JEQ        EXIT       
-160        104E       ~          STCH       BUFFER, X  
-165        1051       ~          TIXR       T          
-170        1053       ~          JLT        RLOOP      
-175        1056       EXIT       STX        LENGTH     
-180        1059       ~          RSUB       ~          
-185        105C       INPUT      BYTE       X'F1'      
-190        105D       .
-195        105D       .      SUBROUTINE TO WRITE RECORD FROM BUFFER
-200        105D       .
-205        105D       WRREC      CLEAR      X          
-210        105F       ~          LDT        LENGTH     
-215        1062       WLOOP      TD         OUTPUT     
-220        1065       ~          JEQ        WLOOP      
-225        1068       ~          LDCH       BUFFER, X  
-230        106B       ~          WD         OUTPUT     
-235        106E       ~          TIXR       T          
-240        1070       ~          JLT        WLOOP      
-245        1073       ~          RSUB       ~          
-250        1076       OUTPUT     BYTE       X'05'      
-255        1077       ~          END        FIRST      
+5          0          COPY       START      0          
+10         0          FIRST      STL        RETADR     
+15         3          ~          LDB        #LENGTH    
+20         6          ~          BASE       LENGTH     
+25         6          CLOOP      +JSUB      RDREC      
+30         10         ~          LDA        LENGTH     
+35         13         ~          COMP       #0         
+40         16         ~          JEQ        ENDFIL     
+45         19         ~          +JSUB      WRREC      
+50         23         ~          J          CLOOP      
+55         26         ENDFIL     LDA        EOF        
+60         29         ~          STA        BUFFER     
+65         32         ~          LDA        #3         
+70         35         ~          STA        LENGTH     
+75         38         ~          +JSUB      WRREC      
+80         42         ~          J          @RETADR    
+85         45         EOF        BYTE       C'EOF'     
+90         48         RETADR     RESW       1          
+95         51         LENGTH     RESW       1          
+100        54         BUFFER     RESB       4096       
+105        4150       .
+110        4150       .      SUBROUTINE TO READ RECORD INTO BUFFER
+115        4150       .
+120        4150       RDREC      CLEAR      X          
+125        4152       ~          CLEAR      A          
+130        4154       ~          CLEAR      S          
+135        4156       ~          +LDT       #4096      
+140        4160       RLOOP      TD         INPUT      
+145        4163       ~          JEQ        RLOOP      
+150        4166       ~          RD         INPUT      
+155        4169       ~          COMPR      A, S       
+160        4171       ~          JEQ        EXIT       
+165        4174       ~          STCH       BUFFER, X  
+170        4177       ~          TIXR       T          
+175        4179       ~          JLT        RLOOP      
+180        4182       EXIT       STX        LENGTH     
+185        4185       ~          RSUB       ~          
+190        4188       INPUT      BYTE       X'F1'      
+195        4189       .
+200        4189       .      SUBROUTINE TO WRITE RECORD FROM BUFFER
+205        4189       .
+210        4189       WRREC      CLEAR      X          
+215        4191       ~          LDT        LENGTH     
+220        4194       WLOOP      TD         OUTPUT     
+225        4197       ~          JEQ        WLOOP      
+230        4200       ~          LDCH       BUFFER, X  
+235        4203       ~          WD         OUTPUT     
+240        4206       ~          TIXR       T          
+245        4208       ~          JLT        WLOOP      
+250        4211       ~          RSUB       ~          
+255        4214       OUTPUT     BYTE       X'05'      
+260        4215       ~          END        FIRST      

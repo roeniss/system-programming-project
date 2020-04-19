@@ -1,47 +1,52 @@
-PC         OPCODE     OPERAND    
-0          START      0          
-3          STL        RETADR     
-6          LDB        #LENGTH    
-6          BASE       LENGTH     
-10         +JSUB      RDREC      
-13         LDA        LENGTH     
-16         COMP       #0         
-19         JEQ        ENDFIL     
-23         +JSUB      WRREC      
-26         J          CLOOP      
-29         LDA        EOF        
-32         STA        BUFFER     
-35         LDA        #3         
-38         STA        LENGTH     
-42         +JSUB      WRREC      
-45         J          @RETADR    
-48         BYTE       C'EOF'     
-51         RESW       1          
-54         RESW       1          
-4150       RESB       4096       
-4152       CLEAR      X          
-4154       CLEAR      A          
-4156       CLEAR      S          
-4160       +LDT       #4096      
-4163       TD         INPUT      
-4166       JEQ        RLOOP      
-4169       RD         INPUT      
-4171       COMPR      A, S       
-4174       JEQ        EXIT       
-4177       STCH       BUFFER, X  
-4179       TIXR       T          
-4182       JLT        RLOOP      
-4185       STX        LENGTH     
-4188       RSUB                  
-4189       BYTE       X'F1'      
-4191       CLEAR      X          
-4194       LDT        LENGTH     
-4197       TD         OUTPUT     
-4200       JEQ        WLOOP      
-4203       LDCH       BUFFER, X  
-4206       WD         OUTPUT     
-4208       TIXR       T          
-4211       JLT        WLOOP      
-4214       RSUB                  
-4215       BYTE       X'05'      
-4215       END        FIRST      
+5          0          COPY       START      0
+10         0          FIRST      STL        RETADR
+15         3          ~          LDB        #LENGTH
+20         6          ~          BASE       LENGTH
+25         6          CLOOP      +JSUB      RDREC
+30         10         ~          LDA        LENGTH
+35         13         ~          COMP       #0
+40         16         ~          JEQ        ENDFIL
+45         19         ~          +JSUB      WRREC
+50         23         ~          J          CLOOP
+55         26         ENDFIL     LDA        EOF
+60         29         ~          STA        BUFFER
+65         32         ~          LDA        #3
+70         35         ~          STA        LENGTH
+75         38         ~          +JSUB      WRREC
+80         42         ~          J          @RETADR
+85         45         EOF        BYTE       C'EOF'
+90         48         RETADR     RESW       1
+95         51         LENGTH     RESW       1
+100        54         BUFFER     RESB       4096
+105        4150       .
+110        4150       .      SUBROUTINE TO READ RECORD INTO BUFFER
+115        4150       .
+120        4150       RDREC      CLEAR      X
+125        4152       ~          CLEAR      A
+130        4154       ~          CLEAR      S
+135        4156       ~          +LDT       #4096
+140        4160       RLOOP      TD         INPUT
+145        4163       ~          JEQ        RLOOP
+150        4166       ~          RD         INPUT
+155        4169       ~          COMPR      A, S
+160        4171       ~          JEQ        EXIT
+165        4174       ~          STCH       BUFFER, X
+170        4177       ~          TIXR       T
+175        4179       ~          JLT        RLOOP
+180        4182       EXIT       STX        LENGTH
+185        4185       ~          RSUB       ~
+190        4188       INPUT      BYTE       X'F1'
+195        4189       .
+200        4189       .      SUBROUTINE TO WRITE RECORD FROM BUFFER
+205        4189       .
+210        4189       WRREC      CLEAR      X
+215        4191       ~          LDT        LENGTH
+220        4194       WLOOP      TD         OUTPUT
+225        4197       ~          JEQ        WLOOP
+230        4200       ~          LDCH       BUFFER, X
+235        4203       ~          WD         OUTPUT
+240        4206       ~          TIXR       T
+245        4208       ~          JLT        WLOOP
+250        4211       ~          RSUB       ~
+255        4214       OUTPUT     BYTE       X'05'
+260        4215       ~          END        FIRST

@@ -28,7 +28,7 @@ optab_node get_optab_node(char *mnemonic);
 int opcode(char *mnemonic);
 
 /**
- * Show all available opcode
+ * Show full of opcode table
  */
 int opcodelist(void);
 

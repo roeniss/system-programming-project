@@ -6,6 +6,7 @@
 #include "lib/others.h"
 #include "lib/history.h"
 #include "lib/optab.h"
+#include "lib/symtab.h"
 #include "lib/vm.h"
 #include "lib/assemble.h"
 
@@ -61,10 +62,9 @@ int main(int argc, char *argv[]) {
   init_opcode("lib/opcode.txt");
 
   // TEST
-  //char filename[] = "2_5.asm";
-  //assemble(filename);
-  //show_symbol();
-  //return 0;
+  char filename[] = "2_5.asm";
+  assemble(filename);
+  return 0;
   // ~TEST
 
   while (1) {

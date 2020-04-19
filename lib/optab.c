@@ -15,9 +15,10 @@ static int _get_hash(char *mnemonic);
 void init_opcode(char *filename) {
   FILE *fp = fopen(filename, "r");
   int code;
-  char mnemonic[5], avail_format[10];
+  char mnemonic[10], avail_format[10], _code[5];
   while (!feof(fp)) {
-    fscanf(fp, "%x %s %s", &code, mnemonic, avail_format);
+    fscanf(fp, "%s %s %s", _code, mnemonic, avail_format);
+    code = (int)strtol(_code, NULL, 16);
     _add_node(code, mnemonic, avail_format);
   }
 }
