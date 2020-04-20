@@ -26,8 +26,8 @@ static int m_record_cnt = 0;
 /**
  * 공통 요소
  */
-static void _open_file_with_ext(FILE **fp, char *name, char ext[4], char mode[2]);
-static void _delete_file_with_ext(char *name, char ext[4]);
+static void _open_file_with_ext(FILE **fp, char *name, const char ext[4], char mode[2]);
+static void _delete_file_with_ext(char *name, const char ext[4]);
 
 /**
  * Pass 1 관련
@@ -47,7 +47,7 @@ void _split_operands();
 
 int assemble(char *file) {
   char original_file[255];
-  if(!file){
+  if (!file) {
     // Error Handling : NO_FILE_NAME
     printf("There is no file name\n");
     goto ERROR_HANDLING;
@@ -65,7 +65,8 @@ int assemble(char *file) {
   _init_symtab();
 
   int error = _pass1();
-  if (error) goto ERROR_HANDLING;
+  if (error)
+    goto ERROR_HANDLING;
 
   fclose(fp_itm);
   fp_itm = NULL;
@@ -77,12 +78,22 @@ int assemble(char *file) {
   _open_file_with_ext(&fp_lst, file, "lst", "w");
 
   error = _pass2();
-  if (error) goto ERROR_HANDLING;
+  if (error)
+    goto ERROR_HANDLING;
 
   // close all files
-  if (fp_itm) {fclose(fp_itm);fp_itm = NULL;}
-  if (fp_obj) {fclose(fp_obj);fp_obj = NULL;}
-  if (fp_lst){ fclose(fp_lst);fp_lst = NULL;}
+  if (fp_itm) {
+    fclose(fp_itm);
+    fp_itm = NULL;
+  }
+  if (fp_obj) {
+    fclose(fp_obj);
+    fp_obj = NULL;
+  }
+  if (fp_lst) {
+    fclose(fp_lst);
+    fp_lst = NULL;
+  }
 
   printf("\x1b[32m" "Successfully " "\x1b[0m" "assemble %s.\n", original_file);
 
@@ -91,10 +102,22 @@ int assemble(char *file) {
   ERROR_HANDLING:
 
   // close all files
-  if (fp_asm) {fclose(fp_asm);fp_asm = NULL;}
-  if (fp_itm) {fclose(fp_itm);fp_itm = NULL;}
-  if (fp_obj) {fclose(fp_obj);fp_obj = NULL;}
-  if (fp_lst) {fclose(fp_lst);fp_lst = NULL;}
+  if (fp_asm) {
+    fclose(fp_asm);
+    fp_asm = NULL;
+  }
+  if (fp_itm) {
+    fclose(fp_itm);
+    fp_itm = NULL;
+  }
+  if (fp_obj) {
+    fclose(fp_obj);
+    fp_obj = NULL;
+  }
+  if (fp_lst) {
+    fclose(fp_lst);
+    fp_lst = NULL;
+  }
 
   // remove every generated files
   _delete_file_with_ext(file, "itm");
@@ -103,15 +126,13 @@ int assemble(char *file) {
   return 1;
 }
 
-static void _open_file_with_ext(FILE **fp, char *name, char ext[4], char mode[2]) {
-  for (int i = 1; i <= 3; ++i)
-    name[strlen(name) - i] = ext[3 - i];
+static void _open_file_with_ext(FILE **fp, char *name, const char ext[4], char mode[2]) {
+  for (int i = 1; i <= 3; ++i) name[strlen(name) - i] = ext[3 - i];
   *fp = fopen(name, mode);
 }
 
-void _delete_file_with_ext(char *name, char ext[4]) {
-  for (int i = 1; i <= 3; ++i)
-    name[strlen(name) - i] = ext[3 - i];
+void _delete_file_with_ext(char *name, const char ext[4]) {
+  for (int i = 1; i <= 3; ++i) name[strlen(name) - i] = ext[3 - i];
   remove(name);
 }
 
@@ -154,12 +175,15 @@ int _parse_asm_line() {
 int _pass1() {
   line_no = 5, loc = 0, PC = 0;
 
-  bool error = _parse_asm_line();
-  if (error) return 1;
+  int error = _parse_asm_line();
+  if (error) {
+    printf("Line %d : Fail to read line", line_no);
+    return 1;
+  }
   //fprintf(fp_itm, "%-10s %-10s %-10s %-10s %-10s %-10s \n", "LINE", "loc", "PC", "SYMBOL", "OPCODE", "OPERAND");
 
   if (order && !strcmp(order, "START")) {
-    if (operand) loc = strtol(operand, NULL, 10);
+    if (operand) loc = (int) strtol(operand, NULL, 10);
     program_length = loc;
   } else {
     fseek(fp_asm, 0, SEEK_SET);
@@ -182,7 +206,8 @@ int _pass1() {
       return 1;
     }
 
-    if (order && !strcmp(order, "END")) break;
+    if (order && !strcmp(order, "END"))
+      break;
 
     if (!(symbol && symbol[0] == '.')) {
       // not comment line
@@ -355,7 +380,9 @@ int _pass2() {
 
     // read new line
     _parse_itm_line();
-    if (!strcmp(order, "END")) break;
+
+    if (!strcmp(order, "END"))
+      break;
 
     if (!(symbol && symbol[0] == '.')) {
       // not comment line
