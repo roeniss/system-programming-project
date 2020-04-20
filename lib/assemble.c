@@ -40,7 +40,7 @@ static int _pass1();
  */
 static int _parse_itm_line();
 static int _pass2();
-static int _convertStrToRegId(char *target);
+static int _convertStrToRegId(const char *target);
 static int _charToHex(char target);
 static void _find_r1r2();
 void _split_operands();
@@ -390,7 +390,7 @@ int _pass2() {
       else op = get_optab_node(order);
       if (op) {
         // opcode?: YES
-        objCode[objCodeIdxTo] = op->code;
+        objCode[objCodeIdxTo] = (unsigned char) op->code;
         if (operand && operand[0] == '#') {
           // immediate addressing (n bit = 0, i bit = 1)
           objCode[objCodeIdxTo++] += 1;
@@ -413,7 +413,7 @@ int _pass2() {
         } else if ((op->format)[0] == '2') {
           // format 2 : 16 bit
           _find_r1r2();
-          objCode[objCodeIdxTo++] = (r1 << 4) + r2;
+          objCode[objCodeIdxTo++] = (unsigned char) ((r1 << 4) + r2);
           PC += 2;
           goto WRITE_LISTING_LINE;
         } else {
@@ -435,8 +435,8 @@ int _pass2() {
             if (order[0] != '+') {
               // format 3
               PC += 3;
-              objCode[objCodeIdxTo++] = disp >> 8;
-              objCode[objCodeIdxTo++] = disp & 0xFF;
+              objCode[objCodeIdxTo++] = (unsigned char) (disp >> 8);
+              objCode[objCodeIdxTo++] = (unsigned char) (disp & 0xFF);
               goto WRITE_LISTING_LINE;
             } else {
               // format 4
@@ -486,9 +486,9 @@ int _pass2() {
         // opcode?: NO (directive: Yes)
         operand = strtok(operand, " ");
         if (!strcmp(order, "WORD")) {
-          objCode[objCodeIdxTo++] = operand[0];
-          objCode[objCodeIdxTo++] = operand[1];
-          objCode[objCodeIdxTo++] = operand[2];
+          objCode[objCodeIdxTo++] = (unsigned char) operand[0];
+          objCode[objCodeIdxTo++] = (unsigned char) operand[1];
+          objCode[objCodeIdxTo++] = (unsigned char) operand[2];
           PC += 3;
         } else if (!strcmp(order, "BASE")) {
           sym = find_symbol(operand);
@@ -506,7 +506,7 @@ int _pass2() {
           if (operand[0] == 'C' || operand[0] == 'c') {
             // Character (1 byte per 1 char)
             while (*(operand + target_cnt) != '\'') {
-              objCode[objCodeIdxTo++] = *(operand + target_cnt);
+              objCode[objCodeIdxTo++] = (unsigned char) *(operand + target_cnt);
               target_cnt++;
               PC++;
             }
@@ -531,7 +531,7 @@ int _pass2() {
             while (*(operand + target_cnt) != '\'') {
               int byte = _charToHex(*(operand + target_cnt++));
               int byte2 = _charToHex(*(operand + target_cnt++));
-              objCode[objCodeIdxTo++] = (byte << 4) + byte2;
+              objCode[objCodeIdxTo++] = (unsigned char) ((byte << 4) + byte2);
               PC++;
             }
           }
@@ -565,7 +565,7 @@ int _pass2() {
   return 0;
 }
 
-int _convertStrToRegId(char *target) {
+int _convertStrToRegId(const char *target) {
   if (!target) return 0;
   if (target[0] == 'A') return 0;
   else if (target[0] == 'X') return 1;
