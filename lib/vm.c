@@ -123,10 +123,10 @@ bool _check_and_assign_dump(char *start, char *end, unsigned long *s, unsigned l
 
 
   // Check 2 : Unreachable address
-  if (start && (*s < 0 || MEMORY_SIZE <= *s)) {
+  if (start && (MEMORY_SIZE <= *s)) {
     printf("Unreachable address (start) : '%s'\n", start);
     return false;
-  } else if (end && (*e < 0 || MEMORY_SIZE <= *e)) {
+  } else if (end && (MEMORY_SIZE <= *e)) {
     printf("Unreachable address (end) : '%s'\n", end);
     return false;
   }
@@ -167,13 +167,13 @@ bool _check_and_assign_edit(char *address, char *value, unsigned long *addr, uns
   *val = strtoul(value, NULL, 16);
 
   // Check 3 : Unreachable address
-  if (*addr < 0 || MEMORY_SIZE <= *addr) {
+  if (MEMORY_SIZE <= *addr) {
     printf("Unreachable address (address) : '%s'\n", address);
     return false;
   }
 
   // Check 4 : Unwritable address
-  if (*val < 0 || 0xFF < *val) {
+  if (0xFF < *val) {
     printf("Unwritable value (value) : '%s'\n", value);
     return false;
   }
@@ -215,10 +215,10 @@ bool _check_and_assign_fill(char *start, char *end, char *value) {
   val = strtoul(value, NULL, 16);
 
   // Check 3 : Unreachable address
-  if (s < 0 || MEMORY_SIZE <= s) {
+  if (MEMORY_SIZE <= s) {
     printf("Unreachable address (start) : '%s'\n", start);
     return false;
-  } else if (e < 0 || MEMORY_SIZE <= e) {
+  } else if (MEMORY_SIZE <= e) {
     printf("Unreachable address (end) : '%s'\n", end);
     return false;
   }
@@ -230,7 +230,7 @@ bool _check_and_assign_fill(char *start, char *end, char *value) {
   }
 
   // Check 5 : Unwritable address
-  if (val < 0 || 0xFF < val) {
+  if (0xFF < val) {
     printf("Unwritable value (value) : '%s'\n", value);
     return false;
   }
