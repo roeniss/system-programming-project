@@ -130,6 +130,7 @@ static void _open_file_with_ext(FILE **fp, char *name, const char ext[4], char m
 }
 
 void _delete_file_with_ext(char *name, const char ext[4]) {
+  if (!name) return;
   for (int i = 1; i <= 3; ++i) name[strlen(name) - i] = ext[3 - i];
   remove(name);
 }
