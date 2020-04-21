@@ -44,7 +44,7 @@ void _add_symbol(char *symbol, int address) {
 }
 
 symtab_node find_symbol(char *symbol) {
-  if(!symbol) return NULL;
+  if (!symbol) return NULL;
   for (symtab_node cur = _symtab_head; cur; cur = cur->next_node) {
     if (!strcmp(cur->symbol, symbol)) return cur;
   }

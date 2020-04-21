@@ -3,47 +3,45 @@
 #include <string.h>
 #include <stdbool.h>
 
-#include "optab.h"
-#include "symtab.h"
+#include "optab.h" // OPTAB을 참조할 때 사용
+#include "symtab.h" // SYMTAB을 참조할 때 사용
 
-#define READ_LINE_LENGTH 255
-#define MAX_MODIFICATION_RECORD 100
+#define READ_LINE_LENGTH 255 // asm 파일, itm 파일을 한 줄씩 읽는 array를 선언할 때 사
+#define MAX_MODIFICATION_RECORD 100 // Modification record를 담는 array를 선언할 때 사용
 
-static FILE *fp_asm, *fp_itm, *fp_lst, *fp_obj;
-static char *symbol, *order, *operand, line[READ_LINE_LENGTH];
-static int line_no, loc, PC, program_length;
-static int regB = -1; // B register
-static int r1, r2; // pass2: format 2 --> register 1, 2
-static char *first_operand, *second_operand; // pass2: format 3/4 --> operand 1 [,2]
-static optab_node op;
-static symtab_node sym;
-static char *placeHolder = " "; // for fprintf
-
-// Modification Record
-static int m_record_node[MAX_MODIFICATION_RECORD];
-static int m_record_cnt = 0;
+static FILE *fp_asm, *fp_itm, *fp_lst, *fp_obj; // 4개의 파일을 각각의 포인터로 관리
+static char line[READ_LINE_LENGTH], *symbol, *order, *operand; // 파일 한 줄을 읽는 포인터와 세 칼럼을 보관하는 포인터
+static int line_no, loc, PC, program_length; // 좌측 라인 넘버, LOC, PC, (pass1에서 계산되는) 전체 프로그램 길이
+static int regB = -1; // B register 값. BASE 지시어가 없으면 사용할 수 없다.
+static int r1, r2; // format 2 --> 두 레지스터 값을 찾기 위해 사용
+static char *first_operand, *second_operand; // format 3/4 --> operand 1 [,2] 을 보관하는 포인터
+static optab_node op; // OPTAB에서 mnemonic에 맞는 opcode 구조체를 가져올 때 사용
+static symtab_node sym; // SYMTAB에서 symbol에 맞는 symbol 구조체를 가져올 때 사용
+static char *placeHolder = " "; // 파일 출력 시 빈 칸이 '(null)' 텍스트가 뜨는 것을 방지
+static int m_record_node[MAX_MODIFICATION_RECORD]; // Modification Record를 보관
+static int m_record_cnt = 0; // Modification Record의 갯수를 저장
 
 /**
  * 공통 요소
  */
-static void _open_file_with_ext(FILE **fp, char *name, const char ext[4], char mode[2]);
-static void _delete_file_with_ext(char *name, const char ext[4]);
+static void _open_file_with_ext(FILE **fp, char *name, const char ext[4], char mode[2]); // 확장자만 바꿔서 파일 오픈
+static void _delete_file_with_ext(char *name, const char ext[4]); // 확장자만 바꿔서 파일 삭제 (에러 발생 시 사용)
 
 /**
  * Pass 1 관련
  */
-static int _parse_asm_line();
-static int _pass1();
+static int _parse_asm_line(); // asm 파일 1 줄을 읽는다. 성공 시 return 0
+static int _pass1(); // 성공 시 return 0
 
 /**
  * Pass 2 관련
  */
-static int _parse_itm_line();
-static int _pass2();
-static int _convertStrToRegId(const char *target);
-static int _charToHex(char target);
-static void _find_r1r2();
-void _split_operands();
+static int _parse_itm_line(); // itm(intermediate) 파일 1 줄을 읽는다. 성공 시 return 0
+static int _pass2(); // 성공 시 return 0
+static int _convertStrToRegId(const char *target); // register 이름을 그에 맞는 int로 변환한다.
+static int _charToHex(char target); // '0' ~ '9', 'A' ~ 'F'의 char를 int로 변환한다
+static void _find_r1r2(); // format 2 --> operand에서 r1, r2다 (int) 를 찾아낸다
+static void _split_operands(); // format 3/4 --> operand에서 first, second operand (char*) 를 찾아낸다
 
 int assemble(char *file) {
   char original_file[255];
@@ -177,21 +175,22 @@ int _pass1() {
 
   int error = _parse_asm_line();
   if (error) {
-    printf("Line %d : Fail to read line", line_no);
+    // Error Handling : FAIL_TO_READ_LINE
+    printf("Line %d : Fail to read line\n", line_no);
     return 1;
   }
-  //fprintf(fp_itm, "%-10s %-10s %-10s %-10s %-10s %-10s \n", "LINE", "loc", "PC", "SYMBOL", "OPCODE", "OPERAND");
 
-  if (order && !strcmp(order, "START")) {
-    if (operand) loc = (int) strtol(operand, NULL, 10);
-    program_length = loc;
-  } else {
+  // fprintf(fp_itm, "%-10s %-10s %-10s %-10s %-10s %-10s \n", "LINE", "loc", "PC", "SYMBOL", "OPCODE", "OPERAND");
+
+  // read first line
+  if (!(order && !strcmp(order, "START"))) {
     fseek(fp_asm, 0, SEEK_SET);
     symbol = "A"; // default program name
     order = "START";
     operand = "0";
   }
-
+  if (operand) loc = (int) strtol(operand, NULL, 10);
+  program_length = loc;
   PC = loc;
   fprintf(fp_itm, "%-10d %-10d %-10s %-10s %-10X \n", line_no, loc, symbol, order, (int) strtol(operand, NULL, 16));
 
@@ -202,7 +201,7 @@ int _pass1() {
     error = _parse_asm_line();
     if (error) {
       // Error Handling : FAIL_TO_READ_LINE
-      printf("Line %d : Fail to read line", line_no);
+      printf("Line %d : Fail to read line\n", line_no);
       return 1;
     }
 
@@ -309,8 +308,8 @@ int _pass1() {
 int _parse_itm_line() {
   char *WORD = " \t", *LINE = "\n", *token;
 
-  if (fgets(line, sizeof(line), fp_itm) == NULL) return false;
-  else if (line[0] == '\n') return false; // considered as EOF
+  if (fgets(line, sizeof(line), fp_itm) == NULL) return 1;
+  else if (line[0] == '\n') return 1; // considered as EOF
 
   // Step 1 : Get line number
   line_no = (int) strtol(strtok(line, WORD), NULL, 10);
@@ -325,7 +324,7 @@ int _parse_itm_line() {
   if (rest[0] == '.') {
     symbol = rest;
     rest[strlen(symbol) - 1] = '\0';
-    return true;
+    return 0;
   } else {
     symbol = strtok(NULL, WORD);
     if (symbol[0] == '~') symbol[0] = '\0';
@@ -339,7 +338,7 @@ int _parse_itm_line() {
   while (*operand == ' ') operand++;
   if (operand[0] == '~') operand = NULL;
 
-  return true;
+  return 0;
 }
 
 /**
@@ -348,8 +347,13 @@ int _parse_itm_line() {
 int _pass2() {
   unsigned char objCode[255] = {0,};
   int objCodeIdxTo = 0, objCodeIdxFrom, disp, textRecordStart = 0;
-  bool forceLineBreak = false;
-  _parse_itm_line();
+  bool forceLineBreak = false, bit_ni = false;
+  int error = _parse_itm_line();
+  if (error) {
+    // Error Handling : FAIL_TO_READ_LINE
+    printf("Line %d : Fail to read line\n", line_no);
+    return 1;
+  }
 
   symbol[6] = '\0';
   fprintf(fp_obj, "H%-6s%06X%06X\n", symbol, (int) strtol(operand, NULL, 16), program_length);
@@ -360,6 +364,7 @@ int _pass2() {
 
   while (1) {
     loc = PC;
+    bit_ni = false;
 
     // write object file if needed
     if (forceLineBreak || objCodeIdxTo >= 28) {
@@ -379,7 +384,12 @@ int _pass2() {
     objCodeIdxFrom = objCodeIdxTo;
 
     // read new line
-    _parse_itm_line();
+    error = _parse_itm_line();
+    if (error) {
+      // Error Handling : FAIL_TO_READ_LINE
+      printf("Line %d : Fail to read line\n", line_no);
+      return 1;
+    }
 
     if (!strcmp(order, "END"))
       break;
@@ -390,15 +400,17 @@ int _pass2() {
       else op = get_optab_node(order);
       if (op) {
         // opcode?: YES
-        objCode[objCodeIdxTo] = (unsigned char) op->code;
+        objCode[objCodeIdxTo] += (unsigned char) op->code;
         if (operand && operand[0] == '#') {
           // immediate addressing (n bit = 0, i bit = 1)
           objCode[objCodeIdxTo++] += 1;
           operand++;
+          bit_ni = true;
         } else if (operand && operand[0] == '@') {
           // indirect addressing (n bit 1, i bit = 0)
           objCode[objCodeIdxTo++] += 2;
           operand++;
+          bit_ni = true;
         } else if ((op->format)[0] == '3') {
           // simple addressing (n bit = 1, i bit = 1)
           objCode[objCodeIdxTo++] += 3;
@@ -424,7 +436,7 @@ int _pass2() {
           if (!sym) {
             // not symbol (absolute value & immediate addressing)
             if (first_operand && ('0' > first_operand[0] || first_operand[0] > '9')) {
-              printf("Line %d : Fail to read operand", line_no);
+              printf("Line %d : Fail to read operand\n", line_no);
               return 1;
             }
             if (operand) disp = (int) strtol(operand, NULL, 10);
@@ -453,7 +465,7 @@ int _pass2() {
           if (order[0] != '+') {
             PC = loc + 3;
             // format 3 : 24 bit
-            if (second_operand && _convertStrToRegId(second_operand) == 1) {
+            if (second_operand && _convertStrToRegId(second_operand) == _convertStrToRegId("X")) {
               // indexed addressing
               objCode[objCodeIdxTo] += (8 << 4);
             }
@@ -539,6 +551,7 @@ int _pass2() {
       }
       // common write to listing file
       WRITE_LISTING_LINE:
+      if (bit_ni) operand--;
       fprintf(fp_lst, "%4d     %04X     %-8s %-8s %-8s  ", line_no, loc, symbol, order, operand);
       for (int i = objCodeIdxFrom; i < objCodeIdxTo; ++i) fprintf(fp_lst, "%02X", objCode[i]);
       fprintf(fp_lst, "\n");

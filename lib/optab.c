@@ -18,7 +18,7 @@ void init_opcode(char *filename) {
   char mnemonic[10], avail_format[10], _code[5];
   while (!feof(fp)) {
     fscanf(fp, "%s %s %s", _code, mnemonic, avail_format);
-    code = (int)strtol(_code, NULL, 16);
+    code = (int) strtol(_code, NULL, 16);
     _add_node(code, mnemonic, avail_format);
   }
 }
