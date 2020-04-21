@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 
 project(project1 C)
 
-add_compile_options(-Wall)
+add_compile_options(-Wall -W)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY /Users/roeniss/CLionProjects/system-programming-project/)
 
