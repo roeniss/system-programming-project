@@ -9,5 +9,6 @@ $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^
 
 clean:
+	rm -f *.o
 	rm -f ./lib/*.o
 	rm -f $(TARGET)
