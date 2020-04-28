@@ -11,6 +11,7 @@
 
 static FILE *fp_asm, *fp_itm, *fp_lst, *fp_obj; // 4개의 파일을 각각의 포인터로 관리
 static char line[READ_LINE_LENGTH], *symbol, *order, *operand; // 파일 한 줄을 읽는 포인터와 세 칼럼을 보관하는 포인터
+static char operand_backup[READ_LINE_LENGTH]; // (order가 콤마로 인해 분리될 때를 대비한) 출력용 operand 배열
 static int line_no, loc, PC, program_length; // 좌측 라인 넘버, LOC, PC, (pass1에서 계산되는) 전체 프로그램 길이
 static int regB = -1; // B register 값. BASE 지시어가 없으면 사용할 수 없다.
 static int r1, r2; // format 2 --> 두 레지스터 값을 찾기 위해 사용
@@ -53,7 +54,7 @@ int assemble(char *file) {
 
   strcpy(original_file, file);
 
-  fp_asm = fopen(file, "r");
+  _open_file_with_ext(&fp_asm, file, "asm", "r");
   if (!fp_asm) {
     // Error Handling : FILE_NOT_FOUND
     printf("There is no such file\n");
@@ -162,7 +163,7 @@ int _parse_asm_line() {
 
   // Step 3 : Get operand (3rd slot)
   operand = strtok(NULL, LINE);
-  while (operand && *operand == ' ' && *(operand + 1) != '\0') operand += 1;
+  while (operand && *operand == ' ' && (*(operand + 1) != '\0' && *(operand + 1) != '\n')) operand += 1;
   if (operand && operand[0] == ' ') operand = NULL;
 
   return 0;
@@ -190,10 +191,11 @@ int _pass1() {
     order = "START";
     operand = "0";
   }
-  if (operand) loc = (int) strtol(operand, NULL, 10);
+  if (operand) loc = (int) strtol(operand, NULL, 16);
+  if (symbol) _add_symbol(symbol, PC);
   program_length = loc;
   PC = loc;
-  fprintf(fp_itm, "%-10d %-10d %-10s %-10s %-10X \n", line_no, loc, symbol, order, (int) strtol(operand, NULL, 16));
+  fprintf(fp_itm, "%-10d %-10d %-10s %-10s %-10s \n", line_no, loc, symbol, order, operand);
 
   // parse the rest lines until meet 'END' or EOF
   while (1) {
@@ -336,8 +338,13 @@ int _parse_itm_line() {
 
   // Step 5 : Get operand
   operand = strtok(NULL, LINE);
-  while (*operand == ' ') operand++;
+  while (operand && *operand == ' ' && *(operand + 1) != '\0') operand++;
   if (operand[0] == '~') operand = NULL;
+  if (operand) { // operand가 분리되는 경우를 대비한 백업 (출력에 사용됨)
+      strcpy(operand_backup, operand);
+  }else{
+      operand_backup[0] = '\0';
+  }
 
   return 0;
 }
@@ -553,7 +560,8 @@ int _pass2() {
       // common write to listing file
       WRITE_LISTING_LINE:
       if (bit_ni) operand--;
-      fprintf(fp_lst, "%4d     %04X     %-8s %-8s %-8s  ", line_no, loc, symbol, order, operand);
+      if (operand[0] != ' ') operand = operand_backup;
+      fprintf(fp_lst, "%4d     %04X     %-8s %-8s %-12s  ", line_no, loc, symbol, order, operand);
       for (int i = objCodeIdxFrom; i < objCodeIdxTo; ++i) fprintf(fp_lst, "%02X", objCode[i]);
       fprintf(fp_lst, "\n");
     } else {
@@ -563,6 +571,7 @@ int _pass2() {
   }
 
   // write rest lines to listing file & object file
+  if (operand[0] != ' ') operand = operand_backup;
   fprintf(fp_lst, "%4d                       %-8s %s\n", line_no, order, operand);
 
   if (objCodeIdxTo) {
