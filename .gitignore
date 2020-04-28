@@ -11,3 +11,7 @@
 /CMakeFiles/
 /Makefile
 /cmake-build-debug
+
+*.itm
+*.obj
+*.lst
