@@ -64,6 +64,10 @@ int help(void) {
   printf("assemble filename\n");
   printf("type filename\n");
   printf("symbol\n");
+  printf("progaddr [address]\n");
+  printf("loader [object filename1] [object filename2] […]\n");
+  printf("bp [address]\n");
+  printf("run\n");
   return 0;
 }
 
