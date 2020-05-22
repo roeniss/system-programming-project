@@ -355,7 +355,7 @@ int _parse_itm_line() {
 int _pass2() {
   unsigned char objCode[255] = {0,};
   int objCodeIdxTo = 0, objCodeIdxFrom, disp, textRecordStart = 0;
-  bool forceLineBreak = false, bit_ni = false;
+  bool forceLineBreak = false, bit_ni;
   int error = _parse_itm_line();
   if (error) {
     // Error Handling : FAIL_TO_READ_LINE
