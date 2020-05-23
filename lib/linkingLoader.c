@@ -7,8 +7,9 @@
 
 #define MEMORY_SIZE 1048576
 
-static int prog_addr = 0x00;
 extern unsigned char VM[MEMORY_SIZE];
+static int prog_addr = 0x00;
+static int bps[MEMORY_SIZE]; // 0: off, 1: on
 
 static estab_node _estab_head = NULL;
 
@@ -218,11 +219,42 @@ int loader(char *filename1, char *filename2, char *filename3) {
     return 0;
 }
 
+int bp(char *addr) {
+    // Error handling
+    if (!addr) {
+        printf("         breakpoint\n         ----------\n");
+        for (int i = 0; i < MEMORY_SIZE; ++i) {
+            if (bps[i] == 1) {
+                printf("         %X\n", i);
+            }
+        };
+        return 0;
+    }
+
+    // check 'clear' parameter
+    if (strcmp(addr, "clear") == 0) {
+        for (int i = 0; i < MEMORY_SIZE; ++i) bps[i] = 0;
+        printf("         [" "\x1b[32m" "ok" "\x1b[0m" "] clear all breakpoints\n");
+        return 0;
+    }
+
+    // parse hex
+    int bp_addr = _convert_string_to_hex(addr);
+    if (bp_addr < 0 || MEMORY_SIZE < bp_addr) {
+        printf("Error: Unavailable breakpoint address value\n");
+        return 1;
+    }
+
+    bps[bp_addr] = 1;
+    printf("         [" "\x1b[32m" "ok" "\x1b[0m" "] create breakpoint %s\n", addr);
+
+    return 0;
+}
+
 
 int _convert_string_to_hex(char *str) {
     return (int) strtoul(str, NULL, 16);
 }
-
 
 void _init_estab(void) {
     estab_node next = NULL, cur = _estab_head;
@@ -256,7 +288,6 @@ void _add_estab_node(int cs_length, int address, char *symbol) {
         _estab_head = new_node;
     }
 }
-
 
 estab_node _find_estab_node(char *symbol) {
     char symbolCopy[20];

@@ -23,4 +23,8 @@ int progaddr(char *addr);
  */
 int loader(char *filename1, char *filename2, char *filename3);
 
+/**
+ * add/clear/show breakpoint
+ */
+int bp(char *addr);
 #endif

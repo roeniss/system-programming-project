@@ -188,9 +188,9 @@ void _execute_command(int *command_flag) {
         case c_loader:
             *command_flag = loader(buffer->parameter[0], buffer->parameter[1], buffer->parameter[2]);
             break;
-//        case c_bp:
-//            *command_flag = show_symbol();
-//            break;
+        case c_bp:
+            *command_flag = bp(buffer->parameter[0]);
+            break;
 //        case c_run:
 //            *command_flag = show_symbol();
 //            break;
