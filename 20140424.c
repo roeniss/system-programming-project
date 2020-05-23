@@ -9,7 +9,7 @@
 #include "lib/symtab.h"
 #include "lib/vm.h"
 #include "lib/assemble.h"
-#include "lib/linker.h"
+#include "lib/linkingLoader.h"
 
 #define MAX_INPUT_BUFFER_SIZE 100
 #define MAX_PARAMETERS_COUNT 3
@@ -47,8 +47,6 @@ struct Buffer {
 typedef struct Buffer Buffer;
 
 
-char *_VM;
-
 // buffer is not actual extern, but here for easy-access in this file.
 Buffer *buffer;
 
@@ -71,6 +69,9 @@ int main() {
     init_history();
     init_opcode("lib/opcode.txt");
 
+    // for test only
+    progaddr("4000");
+    loader("proga.obj", "progb.obj", "progc.obj");
     while (1) {
         command_flag = 0; // '0' means 'no error'
         _receive_command();
@@ -182,11 +183,11 @@ void _execute_command(int *command_flag) {
             *command_flag = show_symbol();
             break;
         case c_progaddr:
-            *command_flag = progaddr((buffer->parameter[0]));
+            *command_flag = progaddr(buffer->parameter[0]);
             break;
-//        case c_loader:
-//            *command_flag = show_symbol();
-//            break;
+        case c_loader:
+            *command_flag = loader(buffer->parameter[0], buffer->parameter[1], buffer->parameter[2]);
+            break;
 //        case c_bp:
 //            *command_flag = show_symbol();
 //            break;

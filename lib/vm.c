@@ -8,13 +8,13 @@
 #define DUMP_COLS 16
 #define DUMP_ROWS 10
 
-static char _VM[MEMORY_SIZE];
+unsigned char VM[MEMORY_SIZE];
 static int _dump_counter = 0;
 
 static bool _check_and_assign_dump(char *start, char *end, unsigned long *s, unsigned long *e);
 static bool _check_and_assign_edit(char *address, char *value, unsigned long *addr, unsigned long *val);
 static bool _check_and_assign_fill(char *start, char *end, char *value);
-static char _get_ascii(char value);
+static char _get_ascii(unsigned char value);
 static bool _is_valid_hex(char *value);
 
 //
@@ -46,7 +46,7 @@ int dump(char *start, char *end) {
       if (cur < s || cur > e)
         printf("   ");
       else
-        printf("%X%X ", ((_VM[cur] & 0xF0) >> 4), (_VM[cur] & 0xF));
+        printf("%X%X ", ((VM[cur] & 0xF0) >> 4), (VM[cur] & 0xF));
     }
 
     printf("; ");
@@ -56,7 +56,7 @@ int dump(char *start, char *end) {
       if (cur < s || cur > e)
         printf(".");
       else
-        printf("%c", _get_ascii(_VM[cur]));
+        printf("%c", _get_ascii(VM[cur]));
     }
 
     printf("\n");
@@ -70,7 +70,7 @@ int edit(char *address, char *value) {
   if (!_check_and_assign_edit(address, value, &addr, &val))
     return 1;
 
-  _VM[addr] = (char) val;
+  VM[addr] = (char) val;
 
   return 0;
 }
@@ -87,13 +87,13 @@ int fill(char *start, char *end, char *value) {
   val = strtoul(value, NULL, 16);
 
   for (i = s; i <= e; i++)
-    _VM[i] = (char) val;
+    VM[i] = (char) val;
 
   return 0;
 }
 
 int reset(void) {
-  for (int i = 0; i < MEMORY_SIZE; i++) _VM[i] = '\0';
+  for (int i = 0; i < MEMORY_SIZE; i++) VM[i] = '\0';
   return 0;
 }
 
@@ -238,7 +238,7 @@ bool _check_and_assign_fill(char *start, char *end, char *value) {
   return true;
 }
 
-char _get_ascii(char value) {
+char _get_ascii(unsigned char value) {
   if (value > 0x7E || value < 20)
     return '.';
   else
