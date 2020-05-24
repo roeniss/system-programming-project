@@ -69,9 +69,6 @@ int main() {
     init_history();
     init_opcode("lib/opcode.txt");
 
-    // for test only
-    progaddr("4000");
-    loader("proga.obj", "progb.obj", "progc.obj");
     while (1) {
         command_flag = 0; // '0' means 'no error'
         _receive_command();
@@ -191,9 +188,9 @@ void _execute_command(int *command_flag) {
         case c_bp:
             *command_flag = bp(buffer->parameter[0]);
             break;
-//        case c_run:
-//            *command_flag = show_symbol();
-//            break;
+        case c_run:
+            *command_flag = run();
+            break;
         case c_unrecognized:
             *command_flag = 1;
             break;
