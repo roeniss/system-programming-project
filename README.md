@@ -114,14 +114,12 @@ symbol  RESW    integer
 
 #### 구현해야 하는 것들
 
-- [] `progaddr`
-- [] `loader`
-- [] `bp`
-- [] `run`
+- [x] `progaddr`
+- [x] `loader`
+- [x] `bp`
+- [x] `run`
 
-#### 제출 요구사항
-
-##### 제출 파일
+##### 제출 요구사항 (필요 파일)
 
 - [] 프로그램 소스 및 헤더파일 
 - [] Makefile
