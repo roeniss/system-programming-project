@@ -1,0 +1,13 @@
+# System Programming (2020-1) Project 2
+
+"Make a assembler"
+
+## How to launch
+
+```bash
+$ make clean && make   # compile
+$ ./20140424.out       # launch
+```
+
+After launch, type `h` for available commands.
+
