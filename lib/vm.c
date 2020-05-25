@@ -239,7 +239,7 @@ bool _check_and_assign_fill(char *start, char *end, char *value) {
 }
 
 unsigned char _get_ascii(unsigned char value) {
-  if (value > 0x7E || value < 20)
+  if (value > 0x7E || value < 0x20)
     return '.';
   else
     return value;
