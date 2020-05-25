@@ -26,9 +26,7 @@ void _print_regs(void);
 
 estab_node _find_estab_node(char *symbol);
 
-void _execOP(unsigned int OP, unsigned int N, unsigned int I, unsigned int X, unsigned int B, unsigned int P,
-             unsigned int E,
-             int TA);
+void _execOP(unsigned int OP, unsigned int N, unsigned int I, unsigned int X, unsigned int B, int TA);
 
 int progaddr(char *addr) {
     // Error handling
@@ -302,7 +300,7 @@ int run(void) {
             R1 = VM[++prog_addr] >> 4;
             R2 = VM[prog_addr] & 0b1111;
             prog_addr++;
-            _execOP(OP, N, I, R1, R2, 0, 0, 0);
+            _execOP(OP, N, I, R1, R2, 0);
         } else {
             X = (VM[++prog_addr] & 0b10000000) >> 7;
             // format 3
@@ -312,7 +310,7 @@ int run(void) {
                 DISP += VM[++prog_addr];
                 prog_addr++;
                 if (X) DISP += REGS[1];
-                _execOP(OP, N, I, X, 0, 0, 0, DISP);
+                _execOP(OP, N, I, X, 0, DISP);
             } else {
                 B = (VM[prog_addr] & 0b1000000) >> 6;
                 P = (VM[prog_addr] & 0b100000) >> 5;
@@ -331,7 +329,7 @@ int run(void) {
                     DISP += VM[prog_addr];
                     prog_addr++;
                 }
-                _execOP(OP, N, I, X, B, P, E, DISP);
+                _execOP(OP, N, I, X, B, DISP);
             }
         }
         bp_done = 0;
@@ -398,9 +396,7 @@ void _print_regs(void) {
     printf("T : %06X\n", REGS[5]);
 }
 
-void _execOP(unsigned int OP, unsigned int N, unsigned int I, unsigned int X, unsigned int B, unsigned int P,
-             unsigned int E,
-             int TA) {
+void _execOP(unsigned int OP, unsigned int N, unsigned int I, unsigned int X, unsigned int B, int TA) {
     // X, B could be respectively R1, R2
     unsigned int r1 = X, r2 = B;
     int value = 0;
@@ -497,8 +493,8 @@ void _execOP(unsigned int OP, unsigned int N, unsigned int I, unsigned int X, un
         case 60: // J
             if (N == 1 && I == 1) {
                 prog_addr = TA;
-            }else if(N == 1 && I == 0) {
-                prog_addr =  (VM[TA] << 16) + (VM[TA + 1] << 8) + VM[TA + 2];
+            } else if (N == 1 && I == 0) {
+                prog_addr = (VM[TA] << 16) + (VM[TA + 1] << 8) + VM[TA + 2];
             }
             break;
         case 48: // JEQ

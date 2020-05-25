@@ -14,7 +14,7 @@ static int _dump_counter = 0;
 static bool _check_and_assign_dump(char *start, char *end, unsigned long *s, unsigned long *e);
 static bool _check_and_assign_edit(char *address, char *value, unsigned long *addr, unsigned long *val);
 static bool _check_and_assign_fill(char *start, char *end, char *value);
-static char _get_ascii(unsigned char value);
+static unsigned char _get_ascii(unsigned char value);
 static bool _is_valid_hex(char *value);
 
 //
@@ -238,7 +238,7 @@ bool _check_and_assign_fill(char *start, char *end, char *value) {
   return true;
 }
 
-char _get_ascii(unsigned char value) {
+unsigned char _get_ascii(unsigned char value) {
   if (value > 0x7E || value < 20)
     return '.';
   else
